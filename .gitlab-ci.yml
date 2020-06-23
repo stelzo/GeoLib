@@ -1,9 +1,31 @@
-image: "stelzo/cpp-cmake-ubuntu"
+image: "gcc"
+
+build:
+    stage: build
+    # instead of calling g++ directly you can also use some build toolkit like make
+    # install the necessary build tools when needed
+    before_script:
+        - apt update && apt -y install cmake make autoconf
+    script:
+        - ./build.sh
+    artifacts:
+      paths:
+        - geotest
+        # depending on your build setup it's most likely a good idea to cache outputs to reduce the build time
+        # cache:
+        #   paths:
+        #     - "*.o"
+  
+# run tests using the binary built before
+test:
+    stage: test
+    script:
+      - ./geotest
+  
 
 geolib:
   script:
-    - mkdir build
-    - cd build
-    - cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_TESTING=ON -D CMAKE_CXX_COMPILER=clang++ ..
+    - mkdir build && cd build
+    - cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_TESTING=ON -DCMAKE_CXX_COMPILER=clang++ ..
     - make
     - make test
