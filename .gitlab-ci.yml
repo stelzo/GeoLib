@@ -10,7 +10,7 @@ build:
         - ./build.sh
     artifacts:
       paths:
-        - geotest
+        - test/geotest
         # depending on your build setup it's most likely a good idea to cache outputs to reduce the build time
         # cache:
         #   paths:
@@ -20,4 +20,5 @@ build:
 test:
     stage: test
     script:
+      - cd build/tests
       - ./geotest
