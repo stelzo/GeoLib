@@ -1,4 +1,6 @@
-image: "madduci/docker-linux-cpp:latest"
+image:
+    - name: "madduci/docker-linux-cpp:latest"
+    - entrypoint: []
 
 before_script:
   - apt-get update -qq
