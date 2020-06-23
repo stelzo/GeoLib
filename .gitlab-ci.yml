@@ -1,9 +1,4 @@
-image:
-    - name: "madduci/docker-linux-cpp:latest"
-    - entrypoint: []
-
-before_script:
-  - apt-get update -qq
+image: "stelzo/cpp-cmake-ubuntu"
 
 geolib:
   script:
