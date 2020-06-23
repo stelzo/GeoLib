@@ -15,120 +15,102 @@
 
 using namespace geo;
 
-template <class _T>
-Vec2<_T>::Vec2(const Vec2<_T> &from, const Vec2<_T> &to) : _x(to._x - from._x), _y(to._y - from._x) {}
+Vec2f::Vec2f(const Vec2f &from, const Vec2f &to) : _x(to._x - from._x), _y(to._y - from._x) {}
 
-template <class _T>
-Vec2<_T> Vec2<_T>::projected_point(const Vec2<_T> &v)
+Vec2f Vec2f::projected_point(const Vec2f &v)
 {
     return v.normalize() * dot(v.normalize());
 }
 
-template <class _T>
-Vec2<_T> Vec2<_T>::closest_vec2_to(const Vec2<_T> &v)
+Vec2f Vec2f::closest_vec2_to(const Vec2f &v)
 {
-    return Vec2<_T>(*this, projected_point(v));
+    return Vec2f(*this, projected_point(v));
 }
 
-// TODO std::epsilon is too small
-template <class _T>
-bool Vec2<_T>::equals(const Vec2<_T> &v) const
+bool Vec2f::equals(const Vec2f &v) const
 {
-    return std::abs(_x-v._x) < 0.00001 && std::abs(_y-v._y) < 0.00001;
+    return fabs(_x - v._x) < 0.00001 && fabs(_y - v._y) < 0.00001;
 }
 
-template <class _T>
-bool Vec2<_T>::operator==(const Vec2<_T> &b) const
+bool Vec2f::operator==(const Vec2f &b) const
 {
     return equals(b);
 }
 
-template <class _T>
-std::string Vec2<_T>::to_string() const
+std::string Vec2f::to_string() const
 {
     std::stringstream ss;
-    ss << "[Vec2] " << "x: " << _x << " -- " << "y: " << _y;
+    ss << "[Vec2] "
+       << "x: " << _x << " -- "
+       << "y: " << _y;
 
     return ss.str();
 }
 
-template <class _T>
-Vec2<_T>::operator std::string() const
+Vec2f::operator std::string() const
 {
     return to_string();
 }
 
-template <class _T>
-bool Vec2<_T>::operator!=(const Vec2<_T> &b) const
+bool Vec2f::operator!=(const Vec2f &b) const
 {
     return !equals(b);
 }
 
-template <class _T>
-bool Vec2<_T>::empty() const
+bool Vec2f::empty() const
 {
-    return _x < std::numeric_limits<_T>::epsilon() && _y < std::numeric_limits<_T>::epsilon();
+    return _x < std::numeric_limits<float>::epsilon() && _y < std::numeric_limits<float>::epsilon();
 }
 
-template <class _T>
-Vec2<_T> Vec2<_T>::rotate(float rad, const Vec2<_T> &pivot)
+Vec2f Vec2f::rotate(float rad, const Vec2f &pivot)
 {
 
     double s = sin(rad);
     double c = cos(rad);
 
     // translate back to origin and rotate clockwise
-    float x = c * (_x-pivot._x) + (_y-pivot._y) * s;
-    float y = s * -(_x-pivot._x) + (_y-pivot._y) * c;
+    float x = c * (_x - pivot._x) + (_y - pivot._y) * s;
+    float y = s * -(_x - pivot._x) + (_y - pivot._y) * c;
 
     // translate back
-    return Vec2<_T>(x + pivot._x, y + pivot._y);
+    return Vec2f(x + pivot._x, y + pivot._y);
 }
 
-template <class _T>
-Vec2<_T> Vec2<_T>::reflect(const Vec2<_T> &v, const Vec2<_T> &n)
+Vec2f Vec2f::reflect(const Vec2f &v, const Vec2f &n)
 {
     float f = _x * n._x + _y * n._y;
-    return Vec2<_T>(_x - n._x * 2.0 * f, _y - n._y * 2.0 * f);
+    return Vec2f(_x - n._x * 2.0 * f, _y - n._y * 2.0 * f);
 }
 
-template <class _T>
-Vec2<_T>::Vec2(_T x, _T y) : _x(x), _y(y) {}
+Vec2f::Vec2f(float x, float y) : _x(x), _y(y) {}
 
-template <class _T>
-Vec2<_T>::Vec2() : _x(0), _y(0) {}
+Vec2f::Vec2f() : _x(0), _y(0) {}
 
-template <class _T>
-Vec2<_T>::Vec2(const Vec2<_T> &v) : _x(v._x), _y(v._y) {}
+Vec2f::Vec2f(const Vec2f &v) : _x(v._x), _y(v._y) {}
 
-template <class _T>
-_T Vec2<_T>::x() const
+float Vec2f::x() const
 {
     return _x;
 }
 
-template <class _T>
-_T Vec2<_T>::y() const
+float Vec2f::y() const
 {
     return _y;
 }
 
-template <class _T>
-Vec2<_T> Vec2<_T>::operator+(const Vec2<_T> &o) const
+Vec2f Vec2f::operator+(const Vec2f &o) const
 {
-    return Vec2<_T>(_x + o._x, _y + o._y);
+    return Vec2f(_x + o._x, _y + o._y);
 }
 
-template <class _T>
-Vec2<_T> &Vec2<_T>::operator+=(const Vec2<_T> &o)
+Vec2f &Vec2f::operator+=(const Vec2f &o)
 {
     _x += o._x;
     _y += o._y;
     return *this;
 }
 
-template <class _T>
-Vec2<_T> &Vec2<_T>::operator=(const Vec2<_T> &o)
+Vec2f &Vec2f::operator=(const Vec2f &o)
 {
     if (equals(o))
         return *this;
@@ -137,74 +119,63 @@ Vec2<_T> &Vec2<_T>::operator=(const Vec2<_T> &o)
     return *this;
 }
 
-template <class _T>
-Vec2<_T> Vec2<_T>::operator-()
+Vec2f Vec2f::operator-()
 {
-    return Vec2(-_x, -_y);
+    return Vec2f(-_x, -_y);
 }
 
-template <class _T>
-Vec2<_T> &Vec2<_T>::operator-=(const Vec2<_T> &o)
+Vec2f &Vec2f::operator-=(const Vec2f &o)
 {
     _x -= o._x;
     _y -= o._y;
     return *this;
 }
 
-template <class _T>
-Vec2<_T> Vec2<_T>::operator-(const Vec2<_T> &o) const
+Vec2f Vec2f::operator-(const Vec2f &o) const
 {
-    return Vec2<_T>(_x - o._x, _y - o._y);
+    return Vec2f(_x - o._x, _y - o._y);
 }
 
-template <class _T>
-Vec2<_T> Vec2<_T>::operator-(_T s) const
+Vec2f Vec2f::operator-(float s) const
 {
-    return Vec2<_T>(_x - s, _y - s);
+    return Vec2f(_x - s, _y - s);
 }
 
-template <class _T>
-Vec2<_T> Vec2<_T>::operator/(_T s) const
+Vec2f Vec2f::operator/(float s) const
 {
-    return s < std::numeric_limits<_T>::epsilon() ? Vec2<_T>() : Vec2<_T>(_x / s, _y / s);
+    return s < std::numeric_limits<float>::epsilon() ? Vec2f() : Vec2f(_x / s, _y / s);
 }
 
-template <class _T>
-double Vec2<_T>::dot(const Vec2<_T> &v) const
+double Vec2f::dot(const Vec2f &v) const
 {
     return (_x * v._x) + (_y * v._y);
 }
 
-template <class _T>
-double Vec2<_T>::lengthSquared() const
+double Vec2f::lengthSquared() const
 {
     return this->dot(*this);
 }
 
-template <class _T>
-double Vec2<_T>::length() const
+double Vec2f::length() const
 {
     return sqrt(lengthSquared());
 }
 
-template <class _T>
-Vec2<_T> Vec2<_T>::normalize() const
+Vec2f Vec2f::normalize() const
 {
     double l = length();
-    if (l < std::numeric_limits<_T>::epsilon())
+    if (l < std::numeric_limits<float>::epsilon())
         return *this;
     return (*this / l);
 }
 
-template <class _T>
-Vec2<_T> Vec2<_T>::operator*(_T s) const
+Vec2f Vec2f::operator*(float s) const
 {
-    return Vec2<_T>(_x * s, _y * s);
+    return Vec2f(_x * s, _y * s);
 }
 
 // Based on a function written by Patrick Hoffmann
-template <class _T>
-double Vec2<_T>::angle(const Vec2<_T> &v, bool sign_by_x_coord)
+double Vec2f::angle(const Vec2f &v, bool sign_by_x_coord)
 {
     int sign = -1;
     if (sign_by_x_coord && v._x >= _x)

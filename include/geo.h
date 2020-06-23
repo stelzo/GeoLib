@@ -9,8 +9,8 @@
 #ifndef geo_h
 #define geo_h
 
-#include "geo_2d.h"
 #include "geo_base.h"
+#include "geo_2d.h"
 
 
 #endif /* geo_h */

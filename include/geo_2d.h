@@ -15,67 +15,66 @@
 namespace geo
 {
 
-    template <class _T>
-    class Vec2
+    class Vec2f
     {
 
     private:
-        _T _x;
-        _T _y;
+        float _x;
+        float _y;
 
     public:
-        Vec2(_T x, _T y);
-        Vec2();
-        Vec2(const Vec2<_T> &v);
-        Vec2(const Vec2<_T> &from, const Vec2<_T> &to);
+        Vec2f(float x, float y);
+        Vec2f();
+        Vec2f(const Vec2f &v);
+        Vec2f(const Vec2f &from, const Vec2f &to);
 
-        _T x() const;
+        float x() const;
 
-        _T y() const;
+        float y() const;
 
-        Vec2<_T> operator+(const Vec2<_T> &o) const;
+        Vec2f operator+(const Vec2f &o) const;
 
-        Vec2<_T> &operator+=(const Vec2<_T> &o);
+        Vec2f &operator+=(const Vec2f &o);
 
-        Vec2<_T> &operator=(const Vec2<_T> &o);
+        Vec2f &operator=(const Vec2f &o);
 
-        Vec2<_T> &operator-=(const Vec2<_T> &o);
+        Vec2f &operator-=(const Vec2f &o);
 
-        Vec2<_T> operator-(const Vec2<_T> &o) const;
+        Vec2f operator-(const Vec2f &o) const;
 
-        Vec2<_T> operator-();
+        Vec2f operator-();
 
-        Vec2<_T> operator-(_T s) const;
+        Vec2f operator-(float s) const;
 
-        Vec2<_T> operator/(_T s) const;
+        Vec2f operator/(float s) const;
 
-        double dot(const Vec2<_T> &v) const;
+        double dot(const Vec2f &v) const;
 
         bool empty() const;
 
         double lengthSquared() const;
 
-        Vec2<_T> projected_point(const Vec2<_T> &v);
+        Vec2f projected_point(const Vec2f &v);
 
-        Vec2<_T> closest_vec2_to(const Vec2<_T> &v);
+        Vec2f closest_vec2_to(const Vec2f &v);
 
-        Vec2<_T> rotate(float rad, const Vec2<_T> &pivot = Vec2<_T>(0, 0));
+        Vec2f rotate(float rad, const Vec2f &pivot = Vec2f(0, 0));
 
-        Vec2<_T> reflect(const Vec2<_T> &v, const Vec2<_T> &n);
+        Vec2f reflect(const Vec2f &v, const Vec2f &n);
 
         double length() const;
 
-        Vec2<_T> normalize() const;
+        Vec2f normalize() const;
 
-        Vec2<_T> operator*(_T s) const;
+        Vec2f operator*(float s) const;
 
-        double angle(const Vec2<_T> &v, bool sign_by_x_coord = true);
+        double angle(const Vec2f &v, bool sign_by_x_coord = true);
 
-        bool equals(const Vec2<_T> &v) const;
+        bool equals(const Vec2f &v) const;
 
-        bool operator==(const Vec2<_T> &b) const;
+        bool operator==(const Vec2f &b) const;
 
-        bool operator!=(const Vec2<_T> &b) const;
+        bool operator!=(const Vec2f &b) const;
 
         operator std::string() const;
 
@@ -83,8 +82,5 @@ namespace geo
     };
 
 } // namespace geo
-
-// template -> need to include the cc directly after header for linking reasons
-#include "geo_2d.cc"
 
 #endif /* geo_2d_hpp */

@@ -15,9 +15,10 @@ endif()
 
 
 set(LIBRARY_SRC
-    src/geo_base.cc
     include/geo_base.h
     include/geo_2d.h
+    src/geo_base.cc
+    src/geo_2d.cc
 )
 
 add_library(geo STATIC
@@ -40,7 +41,7 @@ add_custom_target(uninstall
 
 install(TARGETS geo 
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    FRAMEWORK DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    FRAMEWORK DESTINATION /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
@@ -54,7 +55,7 @@ install(TARGETS geo
 # only for shared librarys
 #set_target_properties(geo PROPERTIES SOVERSION 1)
 
-target_include_directories(geo PUBLIC ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/include)
+target_include_directories(geo PUBLIC ${CMAKE_INSTALL_FULL_INCLUDEDIR})
 
 # only build testing when needed
 if (${ENABLE_TESTING})
