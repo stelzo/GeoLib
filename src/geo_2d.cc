@@ -15,7 +15,7 @@
 
 using namespace geo;
 
-Vec2f::Vec2f(const Vec2f &from, const Vec2f &to) : _x(to._x - from._x), _y(to._y - from._x) {}
+Vec2f::Vec2f(const Vec2f &from, const Vec2f &to) : _x(to._x - from._x), _y(to._y - from._y) {}
 
 Vec2f Vec2f::projected_point(const Vec2f &v)
 {
