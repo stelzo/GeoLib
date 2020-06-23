@@ -5,7 +5,7 @@ build:
     # instead of calling g++ directly you can also use some build toolkit like make
     # install the necessary build tools when needed
     before_script:
-        - apt update && apt -y install cmake make autoconf
+        - apt update && apt -y install cmake make autoconf build-essential llvm g++-10
     script:
         - ./build.sh
     artifacts:
@@ -21,11 +21,3 @@ test:
     stage: test
     script:
       - ./geotest
-  
-
-geolib:
-  script:
-    - mkdir build && cd build
-    - cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_TESTING=ON -DCMAKE_CXX_COMPILER=clang++ ..
-    - make
-    - make test

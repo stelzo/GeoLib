@@ -41,7 +41,6 @@ add_custom_target(uninstall
 
 install(TARGETS geo 
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    FRAMEWORK DESTINATION /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
@@ -55,7 +54,7 @@ install(TARGETS geo
 # only for shared librarys
 #set_target_properties(geo PROPERTIES SOVERSION 1)
 
-target_include_directories(geo PUBLIC ${CMAKE_INSTALL_FULL_INCLUDEDIR})
+target_include_directories(geo PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # only build testing when needed
 if (${ENABLE_TESTING})
