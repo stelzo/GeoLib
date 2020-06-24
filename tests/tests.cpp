@@ -40,13 +40,13 @@ TEST_CASE("construct", "[vec2]")
     CHECK(d.x() == Approx(1));
     CHECK(d.y() == Approx(1));
 
-    CHECK_FALSE(a.empty());
-    CHECK_FALSE(c.empty());
+    CHECK_FALSE(a.zero());
+    CHECK_FALSE(c.zero());
 
-    CHECK(b.empty());
-    CHECK_FALSE(e.empty());
+    CHECK(b.zero());
+    CHECK_FALSE(e.zero());
 
-    CHECK_FALSE(d.empty());
+    CHECK_FALSE(d.zero());
 
     auto y = Vec2f(1,1);
     auto z = Vec2f(1,1);
@@ -71,8 +71,8 @@ TEST_CASE("basic arithm", "[vec2]")
     Vec2f b(4, 4);
 
     // make sure the basics for the following tests are ok
-    CHECK_FALSE(a.empty());
-    CHECK_FALSE(b.empty());
+    CHECK_FALSE(a.zero());
+    CHECK_FALSE(b.zero());
 
 
     // tests depend on working equality operator

@@ -1,13 +1,21 @@
-//
-//  geo_2d.cpp
-//  libgeo
-//
-//  Created by Christopher Sieh on 21.06.20.
-//  Copyright © 2020 steado. All rights reserved.
-//
+// GeoLib - 2D/3D Geometry
+// Copyright (C) 2020 Christopher Sieh
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdio.h>
-#include "geo_2d.h"
+#include "geo.h"
 #include <math.h>
 #include <limits>
 
@@ -57,9 +65,9 @@ bool Vec2f::operator!=(const Vec2f &b) const
     return !equals(b);
 }
 
-bool Vec2f::empty() const
+bool Vec2f::zero() const
 {
-    return _x < std::numeric_limits<float>::epsilon() && _y < std::numeric_limits<float>::epsilon();
+    return fabs(_x) < std::numeric_limits<float>::epsilon() && fabs(_y) < std::numeric_limits<float>::epsilon();
 }
 
 Vec2f Vec2f::rotate(float rad, const Vec2f &pivot)
@@ -151,14 +159,14 @@ double Vec2f::dot(const Vec2f &v) const
     return (_x * v._x) + (_y * v._y);
 }
 
-double Vec2f::lengthSquared() const
+double Vec2f::_lengthSquared() const
 {
     return this->dot(*this);
 }
 
 double Vec2f::length() const
 {
-    return sqrt(lengthSquared());
+    return sqrt(_lengthSquared());
 }
 
 Vec2f Vec2f::normalize() const
@@ -174,22 +182,26 @@ Vec2f Vec2f::operator*(float s) const
     return Vec2f(_x * s, _y * s);
 }
 
-// Based on a function written by Patrick Hoffmann
-double Vec2f::angle(const Vec2f &v, bool sign_by_x_coord)
+double Vec2f::angle_signed(const Vec2f &v, bool sign_coord_x)
 {
     int sign = -1;
-    if (sign_by_x_coord && v._x >= _x)
+    if (sign_coord_x && v._x >= _x)
         sign = 1;
-    if (!sign_by_x_coord && v._y >= _y)
+    if (!sign_coord_x && v._y >= _y)
         sign = 1;
 
+    return sign * angle(v);
+}
+
+double Vec2f::angle(const Vec2f &v)
+{
     double len_a = length();
     double len_b = v.length();
 
     if (len_a < 0.00001 || len_b < 0.00001)
         return 0.0;
 
-    double angle = sign * acos(this->dot(v) / (len_a * len_b));
+    double angle = acos(dot(v) / (len_a * len_b));
 
     return angle < 0.00001 ? 0.0f : angle;
 }

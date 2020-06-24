@@ -15,8 +15,6 @@ endif()
 
 
 set(LIBRARY_SRC
-    include/geo_base.h
-    include/geo_2d.h
     src/geo_base.cc
     src/geo_2d.cc
 )
@@ -27,7 +25,7 @@ add_library(geo STATIC
 
 set_target_properties(geo PROPERTIES
     VERSION ${PROJECT_VERSION}
-    PUBLIC_HEADER "include/geo.h;include/geo_2d.h;include/geo_base.h"
+    PUBLIC_HEADER include/geo.h
 )
 
 # make install
