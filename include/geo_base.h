@@ -11,8 +11,8 @@
 
 namespace geo
 {
-    double deg2rad(float deg);
-    double rad2deg(float rad);
+    double deg2rad(double deg);
+    double rad2deg(double rad);
 }
 
 #endif /* geo_base_hpp */
