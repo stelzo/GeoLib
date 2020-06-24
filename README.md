@@ -1,6 +1,8 @@
 # GeoLib - basic 2D and 3D geometry
+[![pipeline status](https://git.irt-e.de/driverless/geolib/badges/master/pipeline.svg)](https://git.irt-e.de/driverless/geolib/-/commits/master)
 
-This library contains basic vector arithmetic and helper functions. It is build to be extended with any other geometry based function used in the car/simulation.
+This library contains basic vector arithmetic and helper functions. It is built to be extended with any other geometry based function used in the car/simulation.
+
 
 ## How to use
 
