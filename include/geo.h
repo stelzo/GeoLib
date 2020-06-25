@@ -1,5 +1,5 @@
 // GeoLib - 2D/3D Geometry
-// Copyright (C) 2020 Christopher Sieh
+// Copyright (C) 2020 Christopher Sieh (stelzo@steado.de)
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -120,7 +120,7 @@ namespace geo
         // Unary inversion. All x and y change the sign.
         //
         // @return new vector with inverted direction
-        Vec2f operator-();
+        Vec2f operator-() const;
 
         // Substraction with a scalar. All elements get substracted by s.
         //
@@ -148,14 +148,14 @@ namespace geo
         //
         // @param vector to project on
         // @return point on v
-        Vec2f projected_point(const Vec2f &v);
+        Vec2f projected_point(const Vec2f &v) const;
 
         // Calculates the direct vector to any point on v.
         // The resulting vector is has the smallest length possible.
         //
         // @param vector that describes the line
         // @return vector from destination of calling vector to v
-        Vec2f closest_vec2_to(const Vec2f &v);
+        Vec2f closest_vec2_to(const Vec2f &v) const;
 
         // Rotates a vector around a pivot (origin is default).
         // Positive radians mean clockwise,
@@ -164,7 +164,7 @@ namespace geo
         // @param radians to rotate
         // @param pivot to rotate around
         // @return rotated vector
-        Vec2f rotate(float rad, const Vec2f &pivot = Vec2f(0, 0));
+        Vec2f rotate(float rad, const Vec2f &pivot = Vec2f(0, 0)) const;
 
         // Reflects a vector on another vector and returns the resulting bounce vector
         // originated from v in the normal direction of v.
@@ -172,7 +172,7 @@ namespace geo
         // @param vector v
         // @param normal n
         // @return vector reflected on v
-        Vec2f reflect(const Vec2f &v, const Vec2f &n);
+        Vec2f reflect(const Vec2f &v, const Vec2f &n) const;
 
         // Length of the vector in units.
         //
@@ -201,13 +201,13 @@ namespace geo
         // @param sign_coord: whether to check the x or y position for the
         // resulting sign.
         // @return angle in radians
-        double angle_signed(const Vec2f &v, bool sign_coord_x = true);
+        double angle_signed(const Vec2f &v, bool sign_coord_x = true) const;
 
         // Calculates the angle between the calling vector and v.
         //
         // @param vector to find angle to.
         // @return angle in radians
-        double angle(const Vec2f &v);
+        double angle(const Vec2f &v) const;
 
         // Check equality of two vectors. Same functionality as operator==
         // but mainly used for testing.

@@ -1,5 +1,5 @@
 // GeoLib - 2D/3D Geometry
-// Copyright (C) 2020 Christopher Sieh
+// Copyright (C) 2020 Christopher Sieh (stelzo@steado.de)
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,12 +25,12 @@ using namespace geo;
 
 Vec2f::Vec2f(const Vec2f &from, const Vec2f &to) : _x(to._x - from._x), _y(to._y - from._y) {}
 
-Vec2f Vec2f::projected_point(const Vec2f &v)
+Vec2f Vec2f::projected_point(const Vec2f &v) const
 {
     return v.normalize() * dot(v.normalize());
 }
 
-Vec2f Vec2f::closest_vec2_to(const Vec2f &v)
+Vec2f Vec2f::closest_vec2_to(const Vec2f &v) const
 {
     return Vec2f(*this, projected_point(v));
 }
@@ -70,7 +70,7 @@ bool Vec2f::zero() const
     return fabs(_x) < std::numeric_limits<float>::epsilon() && fabs(_y) < std::numeric_limits<float>::epsilon();
 }
 
-Vec2f Vec2f::rotate(float rad, const Vec2f &pivot)
+Vec2f Vec2f::rotate(float rad, const Vec2f &pivot) const
 {
 
     double s = sin(rad);
@@ -84,7 +84,7 @@ Vec2f Vec2f::rotate(float rad, const Vec2f &pivot)
     return Vec2f(x + pivot._x, y + pivot._y);
 }
 
-Vec2f Vec2f::reflect(const Vec2f &v, const Vec2f &n)
+Vec2f Vec2f::reflect(const Vec2f &v, const Vec2f &n) const
 {
     float f = _x * n._x + _y * n._y;
     return Vec2f(_x - n._x * 2.0 * f, _y - n._y * 2.0 * f);
@@ -127,7 +127,7 @@ Vec2f &Vec2f::operator=(const Vec2f &o)
     return *this;
 }
 
-Vec2f Vec2f::operator-()
+Vec2f Vec2f::operator-() const
 {
     return Vec2f(-_x, -_y);
 }
@@ -182,7 +182,7 @@ Vec2f Vec2f::operator*(float s) const
     return Vec2f(_x * s, _y * s);
 }
 
-double Vec2f::angle_signed(const Vec2f &v, bool sign_coord_x)
+double Vec2f::angle_signed(const Vec2f &v, bool sign_coord_x) const
 {
     int sign = -1;
     if (sign_coord_x && v._x >= _x)
@@ -193,7 +193,7 @@ double Vec2f::angle_signed(const Vec2f &v, bool sign_coord_x)
     return sign * angle(v);
 }
 
-double Vec2f::angle(const Vec2f &v)
+double Vec2f::angle(const Vec2f &v) const
 {
     double len_a = length();
     double len_b = v.length();

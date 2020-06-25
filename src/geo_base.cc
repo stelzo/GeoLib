@@ -1,5 +1,5 @@
 // GeoLib - 2D/3D Geometry
-// Copyright (C) 2020 Christopher Sieh
+// Copyright (C) 2020 Christopher Sieh (stelzo@steado.de)
 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

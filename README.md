@@ -4,10 +4,21 @@
 This library contains basic vector arithmetic and helper functions. It is built to be extended with any other geometry based function used in the car/simulation.
 
 
-## How to use
+## Dependencies
+
+- Unix based OS
+
+
+## How to install
 
 Do not use the script given in the repo. It is used for CI/CD only.
 
+The library will be installed in your global path, therefore you can
+pick a directory outside your repository for the installation.
+If you do so, add the library with a link to your dependency list in the
+README.md. 
+
+In your directory of choice:
 ```sh
 git clone git@git.irt-e.de:driverless/geolib.git
 mkdir -p geolib/build && cd geolib/build
@@ -15,9 +26,20 @@ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++ ..
 make
 make install
 ```
-
 If you want to uninstall, use `make uninstall` in the `build` directory.
 
+
+## How to use in your project
+
+Make sure you followed the install steps line by line.
+In your CMakeLists.txt file, add the following lines after your target.
+```cmake
+# header files for all librarys
+target_include_directories(<exe_target> PUBLIC /usr/local/include)
+
+# the librarys you want to link
+target_link_libraries(<exe_target> PUBLIC /usr/local/lib/libgeo.a)
+```
 
 ## How to extend
 
