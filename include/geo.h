@@ -167,12 +167,11 @@ namespace geo
         Vec2f rotate(float rad, const Vec2f &pivot = Vec2f(0, 0)) const;
 
         // Reflects a vector on another vector and returns the resulting bounce vector
-        // originated from v in the normal direction of v.
+        // in the normal direction of v.
         //
-        // @param vector v
         // @param normal n
-        // @return vector reflected on v
-        Vec2f reflect(const Vec2f &v, const Vec2f &n) const;
+        // @return vector reflected on normal
+        Vec2f reflect(const Vec2f &n) const;
 
         // Length of the vector in units.
         //

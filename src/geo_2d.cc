@@ -84,9 +84,9 @@ Vec2f Vec2f::rotate(float rad, const Vec2f &pivot) const
     return Vec2f(x + pivot._x, y + pivot._y);
 }
 
-Vec2f Vec2f::reflect(const Vec2f &v, const Vec2f &n) const
+Vec2f Vec2f::reflect(const Vec2f &n) const
 {
-    float f = _x * n._x + _y * n._y;
+    double f = this->dot(n);
     return Vec2f(_x - n._x * 2.0 * f, _y - n._y * 2.0 * f);
 }
 

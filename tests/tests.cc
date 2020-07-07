@@ -183,7 +183,7 @@ TEST_CASE("functions", "[vec2]")
 
     SECTION("reflection")
     {
-        auto c = -Vec2f(-1, 1).reflect(Vec2f(0, 1), Vec2f(0, 1));
+        auto c = -Vec2f(-1, 1).reflect(Vec2f(0, 1));
         CHECK(c.equals(Vec2f(1,1)));
     }
 
