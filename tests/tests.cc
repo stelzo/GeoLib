@@ -21,6 +21,9 @@ TEST_CASE("construct", "[vec2]")
     Vec2f a(2, 2);
     Vec2f c(3, 3);
 
+    Vec2f g(1, 4);
+    Vec2f f(2, 5);
+
     Vec2f b;
     Vec2f e(a);
     Vec2f d(a, c);
@@ -40,6 +43,8 @@ TEST_CASE("construct", "[vec2]")
     CHECK(d.x() == Approx(1));
     CHECK(d.y() == Approx(1));
 
+    CHECK(Vec2f(g, f).equals(Vec2f(1, 1)));
+
     CHECK_FALSE(a.zero());
     CHECK_FALSE(c.zero());
 
@@ -55,12 +60,12 @@ TEST_CASE("construct", "[vec2]")
     CHECK_FALSE(y == a);
     CHECK(y != a);
 
-    std::string str_res = "[Vec2] x: 2 -- y: 2";
+    std::string str_res = "[Vec2] x: 1 -- y: 4";
 
-    CHECK(a.to_string() == str_res);
+    CHECK(g.to_string() == str_res);
 
     std::stringstream ss;
-    ss << (std::string)a;
+    ss << (std::string)g;
     CHECK(ss.str() == str_res);
 }
 
@@ -68,7 +73,7 @@ TEST_CASE("basic arithm", "[vec2]")
 {
 
     Vec2f a(2, 2);
-    Vec2f b(4, 4);
+    Vec2f b(4, 5);
 
     // make sure the basics for the following tests are ok
     CHECK_FALSE(a.zero());
@@ -81,57 +86,57 @@ TEST_CASE("basic arithm", "[vec2]")
 
     SECTION("plus")
     {
-        Vec2f res(6, 6);
+        Vec2f res(6, 7);
         auto c = a + b;
         CHECK(c.equals(res));
     }
 
     SECTION("minus")
     {
-        Vec2f res(2, 2);
+        Vec2f res(2, 3);
         Vec2f c = b - a;
         CHECK(c.equals(res));
     }
 
     SECTION("scale (multiplication)")
     {
-        Vec2f res(8, 8);
+        Vec2f res(8, 10);
         Vec2f c = (b * 2);
         CHECK(c.equals(res));
     }
 
     SECTION("inline plus")
     {
-        Vec2f res(6, 6);
+        Vec2f res(6, 7);
         a += b;
         CHECK(a.equals(res));
     }
 
     SECTION("inline minus")
     {
-        Vec2f res(2, 2);
+        Vec2f res(2, 3);
         b -= a;
         CHECK(b.equals(res));
     }
 
     SECTION("unary minus -- invert")
     {
-        Vec2f res(-2, -2);
-        a = -a;
-        CHECK(a.equals(res));
+        Vec2f res(-4, -5);
+        b = -b;
+        CHECK(b.equals(res));
     }
 
     SECTION("minus scalar")
     {
-        Vec2f res(0, 0);
-        a = a - 2;
-        CHECK(a.equals(res));
+        Vec2f res(2, 3);
+        b = b - 2;
+        CHECK(b.equals(res));
     }
 
     SECTION("divide scalar")
     {
-        Vec2f res(1, 1);
-        a = a / 2;
+        Vec2f res(3, 4);
+        a = Vec2f(9, 12) / 3;
         CHECK(a.equals(res));
     }
 }
@@ -142,9 +147,14 @@ TEST_CASE("functions", "[vec2]")
     Vec2f a(2, 2);
     Vec2f b(4, 4);
 
-    SECTION("dot product")
+    SECTION("dot product easy")
     {
         CHECK(a.dot(b) == Approx(16));
+    }
+
+    SECTION("dot product harder")
+    {
+        CHECK(Vec2f(3, 5).dot(Vec2f(8, 2)) == Approx(34));
     }
 
     SECTION("rotate clockwise around point")
