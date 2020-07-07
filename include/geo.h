@@ -18,6 +18,7 @@
 #define geo_h
 
 #include <string>
+#include <vector>
 
 namespace geo
 {
@@ -65,6 +66,10 @@ namespace geo
         // Constructor initializes with x = y = 0.
         //
         Vec2f();
+
+        // Destructor - does nothing in this case.
+        //
+        ~Vec2f();
 
         // Copy constructor initializes with x and y from v.
         //
@@ -237,6 +242,84 @@ namespace geo
         //
         // @return string representation of the vector.
         std::string to_string() const;
+    };
+
+    // Multiple points can be connected to define an object.
+    // The main structure that describes that object is called polygon.
+    //
+    // !!! A polygon only knows points, so each Vec2f will be interpreted as a point. !!!
+    // Points will be called vertex or vertices.
+    //
+    // The class manages the points and gives access to general manipulations of the structure.
+    // For specific functions, derive from this class.
+    class Polygon2
+    {
+    private:
+        std::vector<Vec2f> vertices;
+
+    public:
+        Polygon2() = default;
+
+        // Builds a polygon from all sides of a thing by combining the sides.
+        // O(m*n) time.
+        // 
+        // @param sides of a structure described in points
+        Polygon2(const std::vector<std::vector<Vec2f>> &sides);
+
+        // Builds a polygon from points.
+        // O(n) time.
+        //
+        // @param vector of all points.
+        Polygon2(const std::vector<Vec2f> &vertices);
+
+        // Add a single vertex to the vertices programmaticaly.
+        // O(1) time.
+        //
+        // @param vertex to add to the vertices.
+        void add_vertex(const Vec2f &vertex);
+
+        // Checks whether a point is inside a polygon.
+        // O(n) time.
+        //
+        // @param point to check
+        // @return true if inside, else false
+        bool is_inside(const Vec2f &p);
+
+        // Smoothes the polygon with catmull-rom splines.
+        // [WARNING] This function is not tested (because it is hard to do).
+        // O(n*(1/distance)) time.
+        //
+        // @param alpha type of spline (0.0 = uniform, 0.5 = centripetal, 1.0 = chordal). Must be between 0.0 and 1.0
+        // @param tension how tight the spline should be, 1.0 would result in linear splines. Must be between 0.0 and 1.0.
+        // @param distance distance between new points in 1/100 of the distance between to original points
+        void smooth(float alpha, float tension, unsigned int distance);
+
+        // Adds a vertex to the polygon.
+        // O(n) time complexity, because it returns a copy of the polygon.
+        //
+        // @param vertex to add
+        // @return new polygon with added vertex
+        Polygon2 operator+(const Vec2f &vertex) const;
+
+        // Adds a vertex to the polygon but inclusive and pretty.
+        // O(1) time.
+        //
+        // @param vertex to add
+        // @return new polygon with added vertex
+        Polygon2 &operator<<(const Vec2f &vertex);
+
+        // Adds a vertex to the polygon but inclusive.
+        // O(1) time.
+        //
+        // @param vertex to add
+        // @return *this for concatenation
+        Polygon2 &operator+=(const Vec2f &vertex);
+
+        // Copy constructor.
+        // O(n) time.
+        //
+        // @param polygon to copy from.
+        Polygon2(const Polygon2 &v);
     };
 
 } // namespace geo

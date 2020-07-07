@@ -53,8 +53,8 @@ TEST_CASE("construct", "[vec2]")
 
     CHECK_FALSE(d.zero());
 
-    auto y = Vec2f(1,1);
-    auto z = Vec2f(1,1);
+    auto y = Vec2f(1, 1);
+    auto z = Vec2f(1, 1);
 
     CHECK(y == z);
     CHECK_FALSE(y == a);
@@ -78,7 +78,6 @@ TEST_CASE("basic arithm", "[vec2]")
     // make sure the basics for the following tests are ok
     CHECK_FALSE(a.zero());
     CHECK_FALSE(b.zero());
-
 
     // tests depend on working equality operator
     Vec2f t(2, 2);
@@ -159,14 +158,14 @@ TEST_CASE("functions", "[vec2]")
 
     SECTION("rotate clockwise around point")
     {
-        auto c = a.rotate(M_PI/2, b);
+        auto c = a.rotate(M_PI / 2, b);
         Vec2f res(2, 6);
         CHECK(c.equals(res));
     }
 
     SECTION("rotate counter-clockwise around origin")
     {
-        auto c = a.rotate(-M_PI/2);
+        auto c = a.rotate(-M_PI / 2);
         Vec2f res(-2, 2);
         CHECK(c.equals(res));
     }
@@ -194,12 +193,53 @@ TEST_CASE("functions", "[vec2]")
     SECTION("reflection")
     {
         auto c = -Vec2f(-1, 1).reflect(Vec2f(0, 1));
-        CHECK(c.equals(Vec2f(1,1)));
+        CHECK(c.equals(Vec2f(1, 1)));
     }
 
     SECTION("projected point")
     {
         CHECK(a.projected_point(Vec2f(2, 4)).equals(Vec2f(1.2, 2.4)));
     }
+}
 
+TEST_CASE("all", "[Polygon2]")
+{
+    std::vector<Vec2f> ps;
+    ps.emplace_back(1, 2);
+    ps.emplace_back(3, 4);
+    ps.emplace_back(2, 1);
+
+    // operators to add vertex
+    Polygon2 cc;
+    cc += Vec2f(1, 2);
+    cc += Vec2f(3, 4);
+
+    Polygon2 dd = cc + Vec2f(2, 1);
+    Polygon2 ee = cc << Vec2f(2, 1);
+
+    cc += Vec2f(2, 1);
+
+    std::vector<std::vector<Vec2f>> ps_vec;
+    ps_vec.push_back(ps);
+
+    Polygon2 pol(ps);
+    Polygon2 pol_v(ps_vec);
+
+    SECTION("close outside")
+    {
+        CHECK_FALSE(pol.is_inside(Vec2f(2.5, 2.5)));
+        CHECK_FALSE(pol_v.is_inside(Vec2f(2.5, 2.5)));
+        CHECK_FALSE(cc.is_inside(Vec2f(2.5, 2.5)));
+        CHECK_FALSE(dd.is_inside(Vec2f(2.5, 2.5)));
+        CHECK_FALSE(ee.is_inside(Vec2f(2.5, 2.5)));
+    }
+
+    SECTION("easy inside")
+    {
+        CHECK(pol.is_inside(Vec2f(2, 2.5)));
+        CHECK(pol_v.is_inside(Vec2f(2, 2.5)));
+        CHECK(cc.is_inside(Vec2f(2, 2.5)));
+        CHECK(dd.is_inside(Vec2f(2, 2.5)));
+        CHECK(ee.is_inside(Vec2f(2, 2.5)));
+    }
 }
