@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(ENABLE_TESTING "ENABLE_TESTING" OFF)
 
+add_compile_options(-Wall -Wextra -pedantic -Werror)
+
 # check for Mac
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
