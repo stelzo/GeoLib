@@ -39,7 +39,7 @@ namespace geo
     // points and vectors.
     //
     // For position information precision float was chosen because of its small memory footprint
-    // and therefore better caching in algorithms and use cases where milimeter precision
+    // and therefore better caching in algorithms and use cases where millimeter precision
     // is enough when 1 meter equals 1.0f.
     //
     // This class should never have any kind of setter methods. Algorithms and conversions need
@@ -73,7 +73,7 @@ namespace geo
 
         // Copy constructor initializes with x and y from v.
         //
-        // @param vector to include from
+        // @param vector to copy from
         Vec2f(const Vec2f &v);
 
         // Constructs a vector from a point to another point.
@@ -110,16 +110,16 @@ namespace geo
         // @return *this for concatenation
         Vec2f &operator=(const Vec2f &o);
 
-        // Substraction with another vector but the calling class gets the result.
+        // Subtraction with another vector but the calling class gets the result.
         //
         // @param other vector
         // @return *this for concatenation
         Vec2f &operator-=(const Vec2f &o);
 
-        // Substraction with another vector.
+        // Subtraction with another vector.
         //
         // @param other vector
-        // @return new vector with the result of the substraction.
+        // @return new vector with the result of the subtraction.
         Vec2f operator-(const Vec2f &o) const;
 
         // Unary inversion. All x and y change the sign.
@@ -127,7 +127,8 @@ namespace geo
         // @return new vector with inverted direction
         Vec2f operator-() const;
 
-        // Substraction with a scalar. All elements get substracted by s.
+        // Subtraction with a scalar. All elements get subtracted by s.
+        // Equal to subtracting by a Vector [s, s].
         //
         // @param scalar
         Vec2f operator-(float s) const;
@@ -147,16 +148,15 @@ namespace geo
         // @return true if values are near zero, else false
         bool zero() const;
 
-        // Calculates the projected point from calling vector on vector v.
-        // This is also the closest point possible from the destination the
-        // calling vector is pointing to to the line that v describes.
+        // Calculates the projected point from the calling vector on vector v.
+        // This is also the closest point possible to the destination on the line that v describes.
         //
         // @param vector to project on
         // @return point on v
         Vec2f projected_point(const Vec2f &v) const;
 
         // Calculates the direct vector to any point on v.
-        // The resulting vector is has the smallest length possible.
+        // The resulting vector has the smallest length possible.
         //
         // @param vector that describes the line
         // @return vector from destination of calling vector to v
@@ -245,7 +245,12 @@ namespace geo
     };
 
     // Multiple points can be connected to define an object.
-    // The main structure that describes that object is called polygon.
+    // The main structure describing that object is called a polygon.
+    //
+    // Landau notation for all functions is given.
+    // Vector intern reallocation is ignored.
+    // n is scaling linearly with the amount of points in the polygon
+    // m is scaling linearly with the total amount of points passed
     //
     // !!! A polygon only knows points, so each Vec2f will be interpreted as a point. !!!
     // Points will be called vertex or vertices.
@@ -261,18 +266,18 @@ namespace geo
         Polygon2() = default;
 
         // Builds a polygon from all sides of a thing by combining the sides.
-        // O(m*n) time.
+        // O(m) time.
         // 
         // @param sides of a structure described in points
         Polygon2(const std::vector<std::vector<Vec2f>> &sides);
 
         // Builds a polygon from points.
-        // O(n) time.
+        // O(m) time.
         //
         // @param vector of all points.
         Polygon2(const std::vector<Vec2f> &vertices);
 
-        // Add a single vertex to the vertices programmaticaly.
+        // Add a single vertex to the vertices programmatically.
         // O(1) time.
         //
         // @param vertex to add to the vertices.
@@ -316,7 +321,7 @@ namespace geo
         Polygon2 &operator+=(const Vec2f &vertex);
 
         // Copy constructor.
-        // O(n) time.
+        // O(m) time.
         //
         // @param polygon to copy from.
         Polygon2(const Polygon2 &v);
