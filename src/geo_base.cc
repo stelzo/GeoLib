@@ -15,18 +15,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "geo.h"
-#include <math.h>
 
 namespace geo
 {
-    double deg2rad(double deg)
-    {
-        return deg * M_PI / 180;
-    }
-
-    double rad2deg(double rad)
-    {
-        return rad * 180 / M_PI;
-    }
 
 } // namespace geo
