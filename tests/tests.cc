@@ -227,19 +227,19 @@ TEST_CASE("all", "[Polygon2]")
 
     SECTION("close outside")
     {
-        CHECK_FALSE(pol.is_inside(Vec2f(2.5, 2.5)));
-        CHECK_FALSE(pol_v.is_inside(Vec2f(2.5, 2.5)));
-        CHECK_FALSE(cc.is_inside(Vec2f(2.5, 2.5)));
-        CHECK_FALSE(dd.is_inside(Vec2f(2.5, 2.5)));
-        CHECK_FALSE(ee.is_inside(Vec2f(2.5, 2.5)));
+        CHECK_FALSE(pol.contains(Vec2f(2.5, 2.5)));
+        CHECK_FALSE(pol_v.contains(Vec2f(2.5, 2.5)));
+        CHECK_FALSE(cc.contains(Vec2f(2.5, 2.5)));
+        CHECK_FALSE(dd.contains(Vec2f(2.5, 2.5)));
+        CHECK_FALSE(ee.contains(Vec2f(2.5, 2.5)));
     }
 
     SECTION("easy inside")
     {
-        CHECK(pol.is_inside(Vec2f(2, 2.5)));
-        CHECK(pol_v.is_inside(Vec2f(2, 2.5)));
-        CHECK(cc.is_inside(Vec2f(2, 2.5)));
-        CHECK(dd.is_inside(Vec2f(2, 2.5)));
-        CHECK(ee.is_inside(Vec2f(2, 2.5)));
+        CHECK(pol.contains(Vec2f(2, 2.5)));
+        CHECK(pol_v.contains(Vec2f(2, 2.5)));
+        CHECK(cc.contains(Vec2f(2, 2.5)));
+        CHECK(dd.contains(Vec2f(2, 2.5)));
+        CHECK(ee.contains(Vec2f(2, 2.5)));
     }
 }
