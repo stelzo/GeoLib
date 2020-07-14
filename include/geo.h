@@ -19,6 +19,8 @@
 
 #include <string>
 #include <vector>
+#include <math.h>
+#include <limits>
 
 namespace geo
 {
@@ -26,13 +28,19 @@ namespace geo
     //
     // @param degrees
     // @return radians
-    double deg2rad(double deg);
+    inline double deg2rad(double deg)
+    {
+        return deg * M_PI / 180;
+    }
 
     // Converts radians to degrees.
     //
     // @param radians
     // @return degrees
-    double rad2deg(double rad);
+    inline double rad2deg(double rad)
+    {
+        return rad * 180 / M_PI;
+    }
 
     // Vec2f represents a 2D vector in space which also can be a point.
     // It implements basic arithmetic and helper functions, to create and manipulate
@@ -54,7 +62,10 @@ namespace geo
         // Squared length for utilization in multiple algorithms
         //
         // @return length squared
-        double _lengthSquared() const;
+        inline double _lengthSquared() const
+        {
+            return this->dot(*this);
+        }
 
     public:
         // Constructor with initialization of both positions.
@@ -85,82 +96,132 @@ namespace geo
         // Getter for x position.
         //
         // @return x position
-        float x() const;
+        inline float x() const
+        {
+            return _x;
+        }
 
         // Getter for y position.
         //
         // @return y position
-        float y() const;
+        inline float y() const
+        {
+            return _y;
+        }
 
         // Addition of both x and y positions.
         //
         // @param other vector
         // @return new vector with the values from the addition
-        Vec2f operator+(const Vec2f &o) const;
+        inline Vec2f operator+(const Vec2f &o) const
+        {
+            return Vec2f(_x + o._x, _y + o._y);
+        }
 
         // Addition with another vector but the calling class gets the result.
         //
         // @param other vector
         // @return *this for concatenation
-        Vec2f &operator+=(const Vec2f &o);
+        inline Vec2f &operator+=(const Vec2f &o)
+        {
+            _x += o._x;
+            _y += o._y;
+            return *this;
+        }
 
         // Assigns the calling class to the values of the given vector.
         //
         // @param other vector
         // @return *this for concatenation
-        Vec2f &operator=(const Vec2f &o);
+        inline Vec2f &operator=(const Vec2f &o)
+        {
+            if (equals(o))
+                return *this;
+            _x = o._x;
+            _y = o._y;
+            return *this;
+        }
 
         // Subtraction with another vector but the calling class gets the result.
         //
         // @param other vector
         // @return *this for concatenation
-        Vec2f &operator-=(const Vec2f &o);
+        inline Vec2f &operator-=(const Vec2f &o)
+        {
+            _x -= o._x;
+            _y -= o._y;
+            return *this;
+        }
 
         // Subtraction with another vector.
         //
         // @param other vector
         // @return new vector with the result of the subtraction.
-        Vec2f operator-(const Vec2f &o) const;
+        inline Vec2f operator-(const Vec2f &o) const
+        {
+            return Vec2f(_x - o._x, _y - o._y);
+        }
 
         // Unary inversion. All x and y change the sign.
         //
         // @return new vector with inverted direction
-        Vec2f operator-() const;
+        inline Vec2f operator-() const
+        {
+            return Vec2f(-_x, -_y);
+        }
 
         // Subtraction with a scalar. All elements get subtracted by s.
         // Equal to subtracting by a Vector [s, s].
         //
         // @param scalar
-        Vec2f operator-(float s) const;
+        inline Vec2f operator-(float s) const
+        {
+            return Vec2f(_x - s, _y - s);
+        }
 
         // Division by a scalar. All elements get divided by s.
         //
         // @param scalar
-        Vec2f operator/(float s) const;
+        inline Vec2f operator/(float s) const
+        {
+            return s < std::numeric_limits<float>::epsilon() ? Vec2f() : Vec2f(_x / s, _y / s);
+        }
 
         // Dot product with another vector. Mind the order. a.dot(b) == a . b.
         //
         // @param vector
-        double dot(const Vec2f &v) const;
+        inline double dot(const Vec2f &v) const
+        {
+            return (_x * v._x) + (_y * v._y);
+        }
 
         // Checks whether a vector has values near zero (std::limits::epsilon).
         //
         // @return true if values are near zero, else false
-        bool zero() const;
+        inline bool zero() const
+        {
+            return fabs(_x) < std::numeric_limits<float>::epsilon() && fabs(_y) < std::numeric_limits<float>::epsilon();
+        }
 
         // Calculates the projected point from the calling vector on vector v.
         // This is also the closest point possible to the destination on the line that v describes.
         //
         // @param vector to project on
         // @return point on v
-        Vec2f projected_point(const Vec2f &v) const;
+        inline Vec2f projected_point(const Vec2f &v) const
+        {
+            return v.normalize() * dot(v.normalize());
+        }
 
         // Calculates the direct vector to any point on v.
         // The resulting vector has the smallest length possible.
         //
         // @param vector that describes the line
         // @return vector from destination of calling vector to v
-        Vec2f closest_vec2_to(const Vec2f &v) const;
+        inline Vec2f closest_vec2_to(const Vec2f &v) const
+        {
+            return Vec2f(*this, projected_point(v));
+        }
 
         // Rotates a vector around a pivot (origin is default).
         // Positive radians mean clockwise,
@@ -169,31 +230,59 @@ namespace geo
         // @param radians to rotate
         // @param pivot to rotate around
         // @return rotated vector
-        Vec2f rotate(float rad, const Vec2f &pivot = Vec2f(0, 0)) const;
+        inline Vec2f rotate(float rad, const Vec2f &pivot = Vec2f(0, 0)) const
+        {
+
+            double s = sin(rad);
+            double c = cos(rad);
+
+            // translate back to origin and rotate clockwise
+            float x = c * (_x - pivot._x) + (_y - pivot._y) * s;
+            float y = s * -(_x - pivot._x) + (_y - pivot._y) * c;
+
+            // translate back
+            return Vec2f(x + pivot._x, y + pivot._y);
+        }
 
         // Reflects a vector on another vector and returns the resulting bounce vector
         // in the normal direction of v.
         //
         // @param normal n
         // @return vector reflected on normal
-        Vec2f reflect(const Vec2f &n) const;
+        inline Vec2f reflect(const Vec2f &n) const
+        {
+            double f = this->dot(n);
+            return Vec2f(_x - n._x * 2.0 * f, _y - n._y * 2.0 * f);
+        }
 
         // Length of the vector in units.
         //
         // @return length
-        double length() const;
+        inline double length() const
+        {
+            return sqrt(_lengthSquared());
+        }
 
         // Normalizes vector of the calling vector and returns it.
         // Does not change the calling vector.
         //
         // @return normalized vector, length 1
-        Vec2f normalize() const;
+        inline Vec2f normalize() const
+        {
+            double l = length();
+            if (l < std::numeric_limits<float>::epsilon())
+                return *this;
+            return (*this / l);
+        }
 
         // Scales the vector with a scalar s.
         //
         // @param scalar
         // @return scaled vector
-        Vec2f operator*(float s) const;
+        inline Vec2f operator*(float s) const
+        {
+            return Vec2f(_x * s, _y * s);
+        }
 
         // Calculates the angle between the calling vector and v.
         // Positive results mean clockwise,
@@ -205,32 +294,61 @@ namespace geo
         // @param sign_coord: whether to check the x or y position for the
         // resulting sign.
         // @return angle in radians
-        double angle_signed(const Vec2f &v, bool sign_coord_x = true) const;
+        inline double angle_signed(const Vec2f &v, bool sign_coord_x = true) const
+        {
+            int sign = -1;
+            if (sign_coord_x && v._x >= _x)
+                sign = 1;
+            if (!sign_coord_x && v._y >= _y)
+                sign = 1;
+
+            return sign * angle(v);
+        }
 
         // Calculates the angle between the calling vector and v.
         //
         // @param vector to find angle to.
         // @return angle in radians
-        double angle(const Vec2f &v) const;
+        inline double angle(const Vec2f &v) const
+        {
+            double len_a = length();
+            double len_b = v.length();
+
+            if (len_a < 0.00001 || len_b < 0.00001)
+                return 0.0;
+
+            double angle = acos(dot(v) / (len_a * len_b));
+
+            return angle < 0.00001 ? 0.0f : angle;
+        }
 
         // Check equality of two vectors. Same functionality as operator==
         // but mainly used for testing.
         //
         // @param vector v to check equality against.
         // @return true if same values, else false
-        bool equals(const Vec2f &v) const;
+        inline bool equals(const Vec2f &v) const
+        {
+            return fabs(_x - v._x) < 0.00001 && fabs(_y - v._y) < 0.00001;
+        }
 
         // Check equality of two vectors.
         //
         // @param vector v to check equality against.
         // @return true if same values, else false
-        bool operator==(const Vec2f &b) const;
+        inline bool operator==(const Vec2f &b) const
+        {
+            return equals(b);
+        }
 
         // Check inequality of two vectors.
         //
         // @param vector v to check equality against.
         // @return true if different values, else false
-        bool operator!=(const Vec2f &b) const;
+        inline bool operator!=(const Vec2f &b) const
+        {
+            return !equals(b);
+        }
 
         // Implicit string conversion. Minimal string representation
         // of a vector. Same functionality as to_string().
@@ -281,14 +399,17 @@ namespace geo
         // O(1) time.
         //
         // @param vertex to add to the vertices.
-        void add_vertex(const Vec2f &vertex);
+        inline void add_vertex(const Vec2f &vertex)
+        {
+            vertices.push_back(vertex);
+        }
 
         // Checks whether a point is inside a polygon.
         // O(n) time.
         //
         // @param point to check
         // @return true if inside, else false
-        bool is_inside(const Vec2f &p);
+        bool contains(const Vec2f &p);
 
         // Smoothes the polygon with catmull-rom splines.
         // [WARNING] This function is not tested (because it is hard to do).
@@ -304,21 +425,31 @@ namespace geo
         //
         // @param vertex to add
         // @return new polygon with added vertex
-        Polygon2 operator+(const Vec2f &vertex) const;
+        inline Polygon2 operator+(const Vec2f &vertex) const
+        {
+            return Polygon2({vertices, {vertex}});
+        }
 
         // Adds a vertex to the polygon but inclusive and pretty.
         // O(1) time.
         //
         // @param vertex to add
         // @return new polygon with added vertex
-        Polygon2 &operator<<(const Vec2f &vertex);
+        inline Polygon2 &operator<<(const Vec2f &vertex)
+        {
+            return (*this += vertex);
+        }
 
         // Adds a vertex to the polygon but inclusive.
         // O(1) time.
         //
         // @param vertex to add
         // @return *this for concatenation
-        Polygon2 &operator+=(const Vec2f &vertex);
+        inline Polygon2 &operator+=(const Vec2f &vertex)
+        {
+            add_vertex(vertex);
+            return *this;
+        }
 
         // Moves all points of the Polygon.
         // [WARNING] This function is not yet tested.
