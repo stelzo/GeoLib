@@ -256,37 +256,37 @@ TEST_CASE("all", "[Polygon2]")
 
     SECTION("placement")
     {
-        CHECK_FALSE(square.contains(-0.5, -0.5));
-        CHECK(square.contains(0.5, 0.5));
-        CHECK_FALSE(square.contains(1.5, 1.5));
-        CHECK_FALSE(square.contains(2.5, 2.5));
-        CHECK_FALSE(square.contains(4.5, 4.5));
+        CHECK_FALSE(square.contains(Vec2f(-0.5, -0.5)));
+        CHECK(square.contains(Vec2f(0.5, 0.5)));
+        CHECK_FALSE(square.contains(Vec2f(1.5, 1.5)));
+        CHECK_FALSE(square.contains(Vec2f(2.5, 2.5)));
+        CHECK_FALSE(square.contains(Vec2f(4.5, 4.5)));
     }
 
     SECTION("movement")
     {
-        CHECK_FALSE(mov.contains(-0.5, -0.5));
-        CHECK_FALSE(mov.contains(0.5, 0.5));
-        CHECK_FALSE(mov.contains(1.5, 1.5));
-        CHECK(mov.contains(2.5, 2.5));
-        CHECK_FALSE(mov.contains(4.5, 4.5));
+        CHECK_FALSE(mov.contains(Vec2f(-0.5, -0.5)));
+        CHECK_FALSE(mov.contains(Vec2f(0.5, 0.5)));
+        CHECK_FALSE(mov.contains(Vec2f(1.5, 1.5)));
+        CHECK(mov.contains(Vec2f(2.5, 2.5)));
+        CHECK_FALSE(mov.contains(Vec2f(4.5, 4.5)));
     }
 
     SECTION("rotation")
     {
-        CHECK(rot.contains(-0.5, -0.5));
-        CHECK_FALSE(rot.contains(0.5, 0.5));
-        CHECK_FALSE(rot.contains(1.5, 1.5));
-        CHECK_FALSE(rot.contains(2.5, 2.5));
-        CHECK_FALSE(rot.contains(4.5, 4.5));
+        CHECK(rot.contains(Vec2f(-0.5, -0.5)));
+        CHECK_FALSE(rot.contains(Vec2f(0.5, 0.5)));
+        CHECK_FALSE(rot.contains(Vec2f(1.5, 1.5)));
+        CHECK_FALSE(rot.contains(Vec2f(2.5, 2.5)));
+        CHECK_FALSE(rot.contains(Vec2f(4.5, 4.5)));
     }
 
     SECTION("rotation off center")
     {
-        CHECK_FALSE(rotoffcenter.contains(-0.5, -0.5));
-        CHECK_FALSE(rotoffcenter.contains(0.5, 0.5));
-        CHECK_FALSE(rotoffcenter.contains(1.5, 1.5));
-        CHECK_FALSE(rotoffcenter.contains(2.5, 2.5));
-        CHECK(rotoffcenter.contains(4.5, 4.5));
+        CHECK_FALSE(rotoffcenter.contains(Vec2f(-0.5, -0.5)));
+        CHECK_FALSE(rotoffcenter.contains(Vec2f(0.5, 0.5)));
+        CHECK_FALSE(rotoffcenter.contains(Vec2f(1.5, 1.5)));
+        CHECK_FALSE(rotoffcenter.contains(Vec2f(2.5, 2.5)));
+        CHECK(rotoffcenter.contains(Vec2f(4.5, 4.5)));
     }
 }
