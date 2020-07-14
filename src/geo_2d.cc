@@ -300,4 +300,18 @@ Polygon2 &Polygon2::operator<<(const Vec2f &vertex)
     return (*this += vertex);
 }
 
+void Polygon2::move(const Vec2f& movement)
+{
+    for (auto& vertex : vertices) {
+        vertex += movement;
+    }
+}
+
+void Polygon2::rotate(float rad, const Vec2f& pivot)
+{
+    for (auto& vertex : vertices) {
+        vertex = vertex.rotate(rad, pivot);
+    }
+}
+
 Polygon2::Polygon2(const Polygon2 &v) : vertices(v.vertices) {}

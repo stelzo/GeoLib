@@ -320,6 +320,23 @@ namespace geo
         // @return *this for concatenation
         Polygon2 &operator+=(const Vec2f &vertex);
 
+        // Moves all points of the Polygon.
+        // [WARNING] This function is not yet tested.
+        // O(n) time.
+        //
+        // @param movement of the polygon
+        void move(const Vec2f& movement);
+
+        // Rotates all points of the Polygon.
+        // Positive radians mean clockwise,
+        // negative radians mean anticlockwise rotation.
+        // [WARNING] This function is not yet tested
+        // O(n) time.
+        //
+        // @param radians to rotate
+        // @param pivot to rotate around
+        void rotate(float rad, const Vec2f& pivot = Vec2f());
+
         // Copy constructor.
         // O(m) time.
         //

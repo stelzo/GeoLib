@@ -242,4 +242,51 @@ TEST_CASE("all", "[Polygon2]")
         CHECK(dd.is_inside(Vec2f(2, 2.5)));
         CHECK(ee.is_inside(Vec2f(2, 2.5)));
     }
+
+    Polygon2 square;
+    square << Vec2f(0, 0);
+    square << Vec2f(1, 0);
+    square << Vec2f(1, 1);
+    square << Vec2f(0, 1);
+
+    Polygon2 mov(square), rot(square), rotoffcenter(square);
+    mov.move(Vec2f(2, 2));
+    rot.rotate(M_PI);
+    rotoffcenter.rotate(M_PI, Vec2f(2.5, 2.5));
+
+    SECTION("placement")
+    {
+        CHECK_FALSE(square.contains(-0.5, -0.5));
+        CHECK(square.contains(0.5, 0.5));
+        CHECK_FALSE(square.contains(1.5, 1.5));
+        CHECK_FALSE(square.contains(2.5, 2.5));
+        CHECK_FALSE(square.contains(4.5, 4.5));
+    }
+
+    SECTION("movement")
+    {
+        CHECK_FALSE(mov.contains(-0.5, -0.5));
+        CHECK_FALSE(mov.contains(0.5, 0.5));
+        CHECK_FALSE(mov.contains(1.5, 1.5));
+        CHECK(mov.contains(2.5, 2.5));
+        CHECK_FALSE(mov.contains(4.5, 4.5));
+    }
+
+    SECTION("rotation")
+    {
+        CHECK(rot.contains(-0.5, -0.5));
+        CHECK_FALSE(rot.contains(0.5, 0.5));
+        CHECK_FALSE(rot.contains(1.5, 1.5));
+        CHECK_FALSE(rot.contains(2.5, 2.5));
+        CHECK_FALSE(rot.contains(4.5, 4.5));
+    }
+
+    SECTION("rotation off center")
+    {
+        CHECK_FALSE(rotoffcenter.contains(-0.5, -0.5));
+        CHECK_FALSE(rotoffcenter.contains(0.5, 0.5));
+        CHECK_FALSE(rotoffcenter.contains(1.5, 1.5));
+        CHECK_FALSE(rotoffcenter.contains(2.5, 2.5));
+        CHECK(rotoffcenter.contains(4.5, 4.5));
+    }
 }
