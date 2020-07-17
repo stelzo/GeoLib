@@ -500,7 +500,6 @@ namespace geo
         }
 
         // Moves all points of the Polygon.
-        // [WARNING] This function is not yet tested.
         // O(n) time.
         //
         // @param movement of the polygon
@@ -509,7 +508,6 @@ namespace geo
         // Rotates all points of the Polygon.
         // Positive radians mean clockwise,
         // negative radians mean anticlockwise rotation.
-        // [WARNING] This function is not yet tested
         // O(n) time.
         //
         // @param radians to rotate
@@ -540,7 +538,7 @@ namespace geo
         // O(n)
         //
         // @param clone the polygon to clone
-        Polygon2 operator=(Polygon2 clone) {
+        Polygon2 &operator=(const Polygon2& clone) {
             vertices = clone.vertices;
             type = clone.type;
             return *this;
