@@ -531,9 +531,20 @@ namespace geo
 
 
         // Minimal string representation of a polygon.
+        // O(n)
         //
         // @return string representation of the polygon.
         std::string to_string() const;
+
+        // Copying a polygon
+        // O(n)
+        //
+        // @param clone the polygon to clone
+        Polygon2 operator=(Polygon2 clone) {
+            vertices = clone.vertices;
+            type = clone.type;
+            return *this;
+        }
 
         // Copy constructor.
         // O(m) time.
