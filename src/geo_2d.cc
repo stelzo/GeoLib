@@ -118,4 +118,65 @@ void Polygon2::smooth(float alpha, float tension, unsigned int distance)
     vertices = smoothed;
 }
 
+void Polygon2::move(const Vec2f& movement)
+{
+    for (auto& vertex : vertices) {
+        vertex += movement;
+    }
+}
+
+void Polygon2::rotate(float rad, const Vec2f& pivot)
+{
+    for (auto& vertex : vertices) {
+        vertex = vertex.rotate(rad, pivot);
+    }
+}
+
 Polygon2::Polygon2(const Polygon2 &v) : vertices(v.vertices) {}
+
+Polygon2::Polygon2 (vectortype polygontype) {
+    type = polygontype;
+}
+
+Polygon2::Polygon2 (const std::vector<std::vector<Vec2f>> &sides, vectortype polygontype) {
+    for (auto side : sides)
+    {
+        vertices.insert(vertices.end(), side.begin(), side.end());
+    }
+    type = polygontype;
+}
+
+Polygon2::Polygon2 (const std::vector<Vec2f> &vertices, vectortype polygontype) : vertices(vertices) {
+    type = polygontype;
+}
+
+Polygon2 Polygon2::size (float dist) {
+    std::vector<Vec2f> sized;
+
+    Vec2f con(vertices.back(), vertices[1]);
+    Vec2f rn(con.y(), -con.x());
+    sized.push_back(rn.normalize() * dist + vertices[0]);
+
+    for (int i = 1; i < (int) vertices.size() - 1; ++i) {
+        Vec2f connection(vertices[i - 1], vertices[i + 1]);
+        Vec2f rnorm(connection.y(), -connection.x());
+        sized.push_back(rnorm.normalize() * dist + vertices[i]);
+    }
+
+
+    Vec2f c(vertices[vertices.size() - 2], vertices[0]);
+    Vec2f r(c.y(), -c.x());
+    sized.push_back(r.normalize() * dist + vertices[vertices.size() - 1]);
+
+    return Polygon2(sized);
+}
+
+std::string Polygon2::to_string () const {
+    std::stringstream ss;
+    ss << "[Polygon2]\n";
+    for (auto vertex : vertices) {
+        ss << vertex.to_string() << "\n";
+    }
+
+    return ss.str();
+}

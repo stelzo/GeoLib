@@ -242,4 +242,66 @@ TEST_CASE("all", "[Polygon2]")
         CHECK(dd.contains(Vec2f(2, 2.5)));
         CHECK(ee.contains(Vec2f(2, 2.5)));
     }
+
+    Polygon2 square;
+    square << Vec2f(0, 0);
+    square << Vec2f(1, 0);
+    square << Vec2f(1, 1);
+    square << Vec2f(0, 1);
+
+    Polygon2 mov(square), rot(square), rotoffcenter(square);
+    mov.move(Vec2f(2, 2));
+    rot.rotate(M_PI);
+    rotoffcenter.rotate(M_PI, Vec2f(2.5, 2.5));
+
+    SECTION("placement")
+    {
+        CHECK_FALSE(square.contains(Vec2f(-0.5, -0.5)));
+        CHECK(square.contains(Vec2f(0.5, 0.5)));
+        CHECK_FALSE(square.contains(Vec2f(1.5, 1.5)));
+        CHECK_FALSE(square.contains(Vec2f(2.5, 2.5)));
+        CHECK_FALSE(square.contains(Vec2f(4.5, 4.5)));
+    }
+
+    SECTION("movement")
+    {
+        CHECK_FALSE(mov.contains(Vec2f(-0.5, -0.5)));
+        CHECK_FALSE(mov.contains(Vec2f(0.5, 0.5)));
+        CHECK_FALSE(mov.contains(Vec2f(1.5, 1.5)));
+        CHECK(mov.contains(Vec2f(2.5, 2.5)));
+        CHECK_FALSE(mov.contains(Vec2f(4.5, 4.5)));
+    }
+
+    SECTION("rotation")
+    {
+        CHECK(rot.contains(Vec2f(-0.5, -0.5)));
+        CHECK_FALSE(rot.contains(Vec2f(0.5, 0.5)));
+        CHECK_FALSE(rot.contains(Vec2f(1.5, 1.5)));
+        CHECK_FALSE(rot.contains(Vec2f(2.5, 2.5)));
+        CHECK_FALSE(rot.contains(Vec2f(4.5, 4.5)));
+    }
+
+    SECTION("rotation off center")
+    {
+        CHECK_FALSE(rotoffcenter.contains(Vec2f(-0.5, -0.5)));
+        CHECK_FALSE(rotoffcenter.contains(Vec2f(0.5, 0.5)));
+        CHECK_FALSE(rotoffcenter.contains(Vec2f(1.5, 1.5)));
+        CHECK_FALSE(rotoffcenter.contains(Vec2f(2.5, 2.5)));
+        CHECK(rotoffcenter.contains(Vec2f(4.5, 4.5)));
+    }
+
+    Polygon2 sized = square.size(1.0);
+
+    SECTION("sizing")
+    {
+        CHECK(sized.contains(Vec2f(-0.5, -0.5)));
+        CHECK(sized.contains(Vec2f(-0.5, 1.5)));
+        CHECK(sized.contains(Vec2f(1.5, -0.5)));
+        CHECK(sized.contains(Vec2f(1.5, 1.5)));
+
+        CHECK_FALSE(square.contains(Vec2f(-0.5, -0.5)));
+        CHECK_FALSE(square.contains(Vec2f(-0.5, 1.5)));
+        CHECK_FALSE(square.contains(Vec2f(1.5, -0.5)));
+        CHECK_FALSE(square.contains(Vec2f(1.5, 1.5)));
+    }
 }
