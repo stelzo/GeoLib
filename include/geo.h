@@ -42,6 +42,10 @@ namespace geo
         return rad * 180 / M_PI;
     }
 
+    enum vectortype {
+        rel,
+        abs
+    };
     // Vec2f represents a 2D vector in space which also can be a point.
     // It implements basic arithmetic and helper functions, to create and manipulate
     // points and vectors.
@@ -379,9 +383,16 @@ namespace geo
     {
     private:
         std::vector<Vec2f> vertices;
+        vectortype type = abs;
 
     public:
         Polygon2() = default;
+
+        // Builds a polygon with the possibility to accept relative vectors.
+        // O(1) time.
+        //
+        // @param polygontype what type of vectors this polygon should accept
+        Polygon2(vectortype polygontype);
 
         // Builds a polygon from all sides of a thing by combining the sides.
         // O(m) time.
@@ -389,11 +400,25 @@ namespace geo
         // @param sides of a structure described in points
         Polygon2(const std::vector<std::vector<Vec2f>> &sides);
 
+        // Builds a polygon from all sides of a thing by combining the sides with the possibility to accept relative vectors.
+        // O(m) time.
+        //
+        // @param sides of a structure described in points
+        // @param polygontype what type of vectors this polygon should accept
+        Polygon2(const std::vector<std::vector<Vec2f>> &sides, vectortype polygontype);
+
         // Builds a polygon from points.
         // O(m) time.
         //
         // @param vector of all points.
         Polygon2(const std::vector<Vec2f> &vertices);
+
+        // Builds a polygon from points with the possibility to accept relative vectors.
+        // O(m) time.
+        //
+        // @param vector of all points.
+        // @param polygontype what type of vectors this polygon should accept
+        Polygon2(const std::vector<Vec2f> &vertices, vectortype polygontype);
 
         // Add a single vertex to the vertices programmatically.
         // O(1) time.
@@ -401,7 +426,14 @@ namespace geo
         // @param vertex to add to the vertices.
         inline void add_vertex(const Vec2f &vertex)
         {
-            vertices.push_back(vertex);
+            switch (type) {
+                case rel:
+                    vertices.push_back(vertices.back() + vertex);
+                    break;
+                case abs:
+                    vertices.push_back(vertex);
+                    break;
+            }
         }
 
         // Checks whether a point is inside a polygon.
@@ -427,7 +459,16 @@ namespace geo
         // @return new polygon with added vertex
         inline Polygon2 operator+(const Vec2f &vertex) const
         {
-            return Polygon2({vertices, {vertex}});
+            Polygon2 ret;
+            switch (type) {
+                case rel:
+                    ret = Polygon2({vertices, {vertices.back() + vertex}});
+                    break;
+                case abs:
+                    ret = Polygon2({vertices, {vertex}});
+                    break;
+            }
+            return ret;
         }
 
         // Adds a vertex to the polygon but inclusive and pretty.
@@ -447,7 +488,14 @@ namespace geo
         // @return *this for concatenation
         inline Polygon2 &operator+=(const Vec2f &vertex)
         {
-            add_vertex(vertex);
+            switch (type) {
+                case rel:
+                    add_vertex(vertices.back() + vertex);
+                    break;
+                case abs:
+                    add_vertex(vertex);
+                    break;
+            }
             return *this;
         }
 
@@ -467,6 +515,25 @@ namespace geo
         // @param radians to rotate
         // @param pivot to rotate around
         void rotate(float rad, const Vec2f& pivot = Vec2f());
+
+        inline void setType(vectortype polygontype)
+        {
+            type = polygontype;
+        }
+
+        // Sizes the polygon along normals to allow for deadzones
+        // Positive values mean enlargement.
+        // Negative values mean shrinking.
+        // O(n²)
+        //
+        // @param dist how far the polygon should be scaled
+        Polygon2 size(float dist);
+
+
+        // Minimal string representation of a polygon.
+        //
+        // @return string representation of the polygon.
+        std::string to_string() const;
 
         // Copy constructor.
         // O(m) time.
