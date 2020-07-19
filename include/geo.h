@@ -514,6 +514,10 @@ namespace geo
         // @param pivot to rotate around
         void rotate(float rad, const Vec2f& pivot = Vec2f());
 
+        // Sets the type of this polygon
+        // O(1) time.
+        //
+        // @param polygontype the type the polygon should accept
         inline void setType(vectortype polygontype)
         {
             type = polygontype;
@@ -522,27 +526,35 @@ namespace geo
         // Sizes the polygon along normals to allow for deadzones
         // Positive values mean enlargement.
         // Negative values mean shrinking.
-        // O(n²)
+        // O(n) time.
         //
         // @param dist how far the polygon should be scaled
+        // @return the sized polygon
         Polygon2 size(float dist);
 
 
         // Minimal string representation of a polygon.
-        // O(n)
+        // O(n) time.
         //
         // @return string representation of the polygon.
         std::string to_string() const;
 
         // Copying a polygon
-        // O(n)
+        // O(n) time.
         //
         // @param clone the polygon to clone
+        // @return this for concatenation
         Polygon2 &operator=(const Polygon2& clone) {
             vertices = clone.vertices;
             type = clone.type;
             return *this;
         }
+
+        // Calculates the area of this polygon
+        // O(n) time.
+        //
+        // @return the area covered by this polygon
+        double area();
 
         // Copy constructor.
         // O(m) time.

@@ -180,3 +180,14 @@ std::string Polygon2::to_string () const {
 
     return ss.str();
 }
+
+double Polygon2::area () {
+    double phalf = 0, nhalf = 0;
+
+    for (int i = 0; i < (int) vertices.size(); ++i) {
+        phalf += vertices[i].x() * vertices[(i + 1) % vertices.size()].y();
+        nhalf += vertices[(i + 1) % vertices.size()].x() * vertices[i].y();
+    }
+
+    return std::abs(phalf - nhalf) / 2;
+}
