@@ -150,7 +150,7 @@ Polygon2::Polygon2 (const std::vector<Vec2f> &vertices, vectortype polygontype) 
     type = polygontype;
 }
 
-Polygon2 Polygon2::size (float dist) {
+Polygon2 Polygon2::sized (float dist) {
     std::vector<Vec2f> sized;
 
     Vec2f con(vertices.back(), vertices[1]);

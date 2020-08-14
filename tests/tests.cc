@@ -290,7 +290,7 @@ TEST_CASE("all", "[Polygon2]")
         CHECK(rotoffcenter.contains(Vec2f(4.5, 4.5)));
     }
 
-    Polygon2 sized = square.size(1.0);
+    Polygon2 sized = square.sized(1.0);
 
     SECTION("sizing")
     {

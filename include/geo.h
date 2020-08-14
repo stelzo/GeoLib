@@ -43,8 +43,8 @@ namespace geo
     }
 
     enum vectortype {
-        rel,
-        abs
+        abs = 0,
+        rel = 1
     };
     // Vec2f represents a 2D vector in space which also can be a point.
     // It implements basic arithmetic and helper functions, to create and manipulate
@@ -59,10 +59,11 @@ namespace geo
     class Vec2f
     {
 
-    private:
+    protected:
         float _x;
         float _y;
 
+    private:
         // Squared length for utilization in multiple algorithms
         //
         // @return length squared
@@ -426,14 +427,7 @@ namespace geo
         // @param vertex to add to the vertices.
         inline void add_vertex(const Vec2f &vertex)
         {
-            switch (type) {
-                case rel:
-                    vertices.push_back(vertices.back() + vertex);
-                    break;
-                case abs:
-                    vertices.push_back(vertex);
-                    break;
-            }
+            vertices.push_back(vertices.size() ? vertices.back() * type + vertex : vertex);
         }
 
         // Checks whether a point is inside a polygon.
@@ -459,15 +453,9 @@ namespace geo
         // @return new polygon with added vertex
         inline Polygon2 operator+(const Vec2f &vertex) const
         {
-            Polygon2 ret;
-            switch (type) {
-                case rel:
-                    ret = Polygon2({vertices, {vertices.back() + vertex}});
-                    break;
-                case abs:
-                    ret = Polygon2({vertices, {vertex}});
-                    break;
-            }
+            Polygon2 ret = Polygon2(vertices);
+            ret.add_vertex(vertices.size() ? vertices.back() * type + vertex : vertex);
+
             return ret;
         }
 
@@ -488,14 +476,7 @@ namespace geo
         // @return *this for concatenation
         inline Polygon2 &operator+=(const Vec2f &vertex)
         {
-            switch (type) {
-                case rel:
-                    add_vertex(vertices.back() + vertex);
-                    break;
-                case abs:
-                    add_vertex(vertex);
-                    break;
-            }
+            add_vertex(vertices.size() ? vertices.back() * type + vertex : vertex);
             return *this;
         }
 
@@ -530,7 +511,7 @@ namespace geo
         //
         // @param dist how far the polygon should be scaled
         // @return the sized polygon
-        Polygon2 size(float dist);
+        Polygon2 sized(float dist);
 
 
         // Minimal string representation of a polygon.
@@ -555,6 +536,14 @@ namespace geo
         //
         // @return the area covered by this polygon
         double area();
+
+        // Get the underlaying points
+        // O(1) time.
+        //
+        // @return the vertices of the polygon
+        inline std::vector<Vec2f> getVertices() const {
+            return vertices;
+        }
 
         // Copy constructor.
         // O(m) time.
