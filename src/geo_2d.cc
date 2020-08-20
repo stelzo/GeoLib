@@ -150,7 +150,7 @@ Polygon2::Polygon2 (const std::vector<Vec2f> &vertices, vectortype polygontype) 
     type = polygontype;
 }
 
-Polygon2 Polygon2::size (float dist) {
+Polygon2 Polygon2::sized (float dist) {
     std::vector<Vec2f> sized;
 
     Vec2f con(vertices.back(), vertices[1]);
@@ -179,4 +179,15 @@ std::string Polygon2::to_string () const {
     }
 
     return ss.str();
+}
+
+double Polygon2::area () {
+    double phalf = 0, nhalf = 0;
+
+    for (int i = 0; i < (int) vertices.size(); ++i) {
+        phalf += vertices[i].x() * vertices[(i + 1) % vertices.size()].y();
+        nhalf += vertices[(i + 1) % vertices.size()].x() * vertices[i].y();
+    }
+
+    return std::abs(phalf - nhalf) / 2;
 }
