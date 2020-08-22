@@ -202,6 +202,197 @@ TEST_CASE("functions", "[vec2]")
     }
 }
 
+TEST_CASE("construct3", "[vec3]")
+{
+    Vec3f a(2, 2, 2);
+    Vec3f c(3, 3, 3);
+
+    Vec3f g(1, 4, 7);
+    Vec3f f(2, 5, 8);
+
+    Vec3f b;
+    Vec3f e(a);
+    Vec3f d(a, c);
+
+    CHECK(a.x() == Approx(2));
+    CHECK(a.y() == Approx(2));
+    CHECK(a.z() == Approx(2));
+
+    CHECK(c.x() == Approx(3));
+    CHECK(c.y() == Approx(3));
+    CHECK(c.z() == Approx(3));
+
+    CHECK(b.x() == Approx(0));
+    CHECK(b.y() == Approx(0));
+    CHECK(b.z() == Approx(0));
+
+    CHECK(e.x() == Approx(2));
+    CHECK(e.y() == Approx(2));
+    CHECK(e.z() == Approx(2));
+
+    CHECK(d.x() == Approx(1));
+    CHECK(d.y() == Approx(1));
+    CHECK(d.z() == Approx(1));
+
+    CHECK(Vec3f(g, f).equals(Vec3f(1, 1, 1)));
+
+    CHECK_FALSE(a.zero());
+    CHECK_FALSE(c.zero());
+
+    CHECK(b.zero());
+    CHECK_FALSE(e.zero());
+
+    CHECK_FALSE(d.zero());
+
+    auto y = Vec3f(1, 1, 1);
+    auto z = Vec3f(1, 1, 1);
+
+    CHECK(y == z);
+    CHECK_FALSE(y == a);
+    CHECK(y != a);
+
+    std::string str_res = "[Vec3] x: 1 -- y: 4 -- z: 7";
+
+    CHECK(g.to_string() == str_res);
+
+    std::stringstream ss;
+    ss << (std::string)g;
+    CHECK(ss.str() == str_res);
+}
+
+TEST_CASE("basic arithm3", "[vec3]")
+{
+
+    Vec3f a(2, 2, 2);
+    Vec3f b(4, 5, 6);
+
+    // make sure the basics for the following tests are ok
+    CHECK_FALSE(a.zero());
+    CHECK_FALSE(b.zero());
+
+    // tests depend on working equality operator
+    Vec3f t(2, 2, 2);
+    CHECK(a.equals(t));
+
+    SECTION("plus")
+    {
+        Vec3f res(6, 7, 8);
+        auto c = a + b;
+        CHECK(c.equals(res));
+    }
+
+    SECTION("minus")
+    {
+        Vec3f res(2, 3, 4);
+        Vec3f c = b - a;
+        CHECK(c.equals(res));
+    }
+
+    SECTION("scale (multiplication)")
+    {
+        Vec3f res(8, 10, 12);
+        Vec3f c = (b * 2);
+        CHECK(c.equals(res));
+    }
+
+    SECTION("inline plus")
+    {
+        Vec3f res(6, 7, 8);
+        a += b;
+        CHECK(a.equals(res));
+    }
+
+    SECTION("inline minus")
+    {
+        Vec3f res(2, 3, 4);
+        b -= a;
+        CHECK(b.equals(res));
+    }
+
+    SECTION("unary minus -- invert")
+    {
+        Vec3f res(-4, -5, -6);
+        b = -b;
+        CHECK(b.equals(res));
+    }
+
+    SECTION("minus scalar")
+    {
+        Vec3f res(2, 3, 4);
+        b = b - 2;
+        CHECK(b.equals(res));
+    }
+
+    SECTION("divide scalar")
+    {
+        Vec3f res(3, 4, 5);
+        a = Vec3f(9, 12, 15) / 3;
+        CHECK(a.equals(res));
+    }
+}
+
+TEST_CASE("functions3", "[vec3]")
+{
+
+    Vec3f a(2, 2, 2);
+    Vec3f b(4, 4, 4);
+
+    SECTION("dot product easy")
+    {
+        CHECK(a.dot(b) == Approx(24));
+    }
+
+    SECTION("dot product harder")
+    {
+        CHECK(Vec3f(3, 5, 7).dot(Vec3f(8, 2, -4)) == Approx(6));
+    }
+
+    SECTION("rotate clockwise around point")
+    {
+        auto c = a.rotate(M_PI / 2, b);
+        Vec3f res(2, 6, 2);
+        CHECK(c.equals(res));
+    }
+
+    SECTION("rotate counter-clockwise around origin")
+    {
+        auto c = a.rotate(-M_PI / 2);
+        Vec3f res(-2, 2, 2);
+        CHECK(c.equals(res));
+    }
+
+    SECTION("length")
+    {
+        CHECK(a.length() == Approx(3.464101615));
+    }
+
+    SECTION("normalize")
+    {
+        CHECK(a.normalize().length() == Approx(1));
+    }
+
+    SECTION("angle zero")
+    {
+        CHECK(a.angle(b) == Approx(0));
+    }
+
+    SECTION("angle vector")
+    {
+        CHECK(a.angle(Vec3f(2, 4, 2)) == Approx(0.3398369095));
+    }
+
+    SECTION("reflection")
+    {
+        auto c = -Vec3f(-1, 1, 0).reflect(Vec3f(0, 1, 0));
+        CHECK(c.equals(Vec3f(1, 1, 0)));
+    }
+
+    SECTION("projected point")
+    {
+        CHECK(a.projected_point(Vec3f(2, 4, 0)).equals(Vec3f(1.2, 2.4, 0)));
+    }
+}
+
 TEST_CASE("all", "[Polygon2]")
 {
     std::vector<Vec2f> ps;

@@ -19,6 +19,7 @@ endif()
 set(LIBRARY_SRC
     src/geo_base.cc
     src/geo_2d.cc
+    src/geo_3d.cc
 )
 
 add_library(geo STATIC
