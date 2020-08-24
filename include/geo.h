@@ -21,6 +21,7 @@
 #include <vector>
 #include <math.h>
 #include <limits>
+#include <algorithm>
 
 namespace geo
 {
@@ -655,8 +656,13 @@ namespace geo
             if (len_a < 0.00001 || len_b < 0.00001)
                 return 0.0;
 
-            double value = dot(v) / (len_a * len_b);
-            double angle = acos(std::max(-1.0, std::min(1.0, value)));
+            double n = dot(v) / (len_a * len_b);
+            // branchless clamp
+            double lower = -1, upper = 1;
+            n= 0.5 * (n + lower + fabs(n - lower));
+            n= 0.5 * (n + upper - fabs(upper - n));
+
+            double angle = acos(n);
 
             return angle < 0.00001 ? 0.0f : angle;
         }
