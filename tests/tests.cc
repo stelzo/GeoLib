@@ -481,14 +481,14 @@ TEST_CASE("all", "[Polygon2]")
         CHECK(rotoffcenter.contains(Vec2f(4.5, 4.5)));
     }
 
-    Polygon2 sized = square.sized(1.0);
+    Polygon2 scaled = square.scaled(1.0);
 
     SECTION("sizing")
     {
-        CHECK(sized.contains(Vec2f(-0.5, -0.5)));
-        CHECK(sized.contains(Vec2f(-0.5, 1.5)));
-        CHECK(sized.contains(Vec2f(1.5, -0.5)));
-        CHECK(sized.contains(Vec2f(1.5, 1.5)));
+        CHECK(scaled.contains(Vec2f(-0.5, -0.5)));
+        CHECK(scaled.contains(Vec2f(-0.5, 1.5)));
+        CHECK(scaled.contains(Vec2f(1.5, -0.5)));
+        CHECK(scaled.contains(Vec2f(1.5, 1.5)));
 
         CHECK_FALSE(square.contains(Vec2f(-0.5, -0.5)));
         CHECK_FALSE(square.contains(Vec2f(-0.5, 1.5)));

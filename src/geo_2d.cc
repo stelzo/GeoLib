@@ -171,6 +171,27 @@ Polygon2 Polygon2::sized (float dist) {
     return Polygon2(sized);
 }
 
+Polygon2 Polygon2::scaled (float dist) {
+    std::vector<Vec2f> sized;
+
+    Vec2f con(vertices.back(), vertices[1]);
+    Vec2f rn(con.y(), -con.x());
+    sized.push_back(rn.normalize() * dist + vertices[0]);
+
+    for (int i = 1; i < (int) vertices.size() - 1; ++i) {
+        Vec2f connection(vertices[i - 1], vertices[i + 1]);
+        Vec2f rnorm(connection.y(), -connection.x());
+        sized.push_back(rnorm.normalize() * dist + vertices[i]);
+    }
+
+
+    Vec2f c(vertices[vertices.size() - 2], vertices[0]);
+    Vec2f r(c.y(), -c.x());
+    sized.push_back(r.normalize() * dist + vertices[vertices.size() - 1]);
+
+    return Polygon2(sized);
+}
+
 std::string Polygon2::to_string () const {
     std::stringstream ss;
     ss << "[Polygon2]\n";

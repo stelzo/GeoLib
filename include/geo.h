@@ -851,8 +851,17 @@ namespace geo
         //
         // @param dist how far the polygon should be scaled
         // @return the sized polygon
+        [[deprecated("This function has been renamed to scaled()")]]
         Polygon2 sized(float dist);
 
+        // Sizes the polygon along normals to allow for deadzones
+        // Positive values mean enlargement.
+        // Negative values mean shrinking.
+        // O(n) time.
+        //
+        // @param dist how far the polygon should be scaled
+        // @return the sized polygon
+        Polygon2 scaled(float dist);
 
         // Minimal string representation of a polygon.
         // O(n) time.
