@@ -190,6 +190,15 @@ TEST_CASE("functions", "[vec2]")
         CHECK(a.angle(Vec2f(2, 4)) == Approx(0.321751));
     }
 
+    SECTION("real angle vector")
+    {
+        CHECK(Vec2f(1, 0).real_angle(Vec2f(0, 1)) == Approx(-M_PI_2));
+        CHECK(Vec2f(1, 0).real_angle(Vec2f(0, -1)) == Approx(M_PI_2));
+        CHECK(a.real_angle(Vec2f(2, 4)) == Approx(-0.321751));
+        CHECK(a.real_angle(Vec2f(4, 2)) == Approx(0.321751));
+
+    }
+
     SECTION("reflection")
     {
         auto c = -Vec2f(-1, 1).reflect(Vec2f(0, 1));

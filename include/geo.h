@@ -312,6 +312,17 @@ namespace geo
         }
 
         // Calculates the angle between the calling vector and v.
+        // Positive results mean clockwise,
+        // negative results mean anticlockwise rotation.
+        //
+        // @param v: vector/point to find angle to.
+        // @return angle in radians
+        inline double real_angle(const Vec2f &v) const
+        {
+            return (atan2(_y, _x) - atan2(v.y(), v.x()));
+        }
+
+        // Calculates the angle between the calling vector and v.
         //
         // @param vector to find angle to.
         // @return angle in radians
