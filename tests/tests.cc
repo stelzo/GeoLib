@@ -196,7 +196,29 @@ TEST_CASE("functions", "[vec2]")
         CHECK(Vec2f(1, 0).real_angle(Vec2f(0, -1)) == Approx(M_PI_2));
         CHECK(a.real_angle(Vec2f(2, 4)) == Approx(-0.321751));
         CHECK(a.real_angle(Vec2f(4, 2)) == Approx(0.321751));
+    }
 
+    SECTION("on")
+    {
+        CHECK(Vec2f(1, 0).on(Vec2f(2, 0)));
+        CHECK(Vec2f(1, 1).on(Vec2f(2, 2)));
+        CHECK_FALSE(Vec2f(1, 0).on(Vec2f(2, 2)));
+        CHECK_FALSE(Vec2f(-1, -1).on(Vec2f(2, 2)));
+        CHECK(a.on(Vec2f(4, 4)));
+        CHECK_FALSE(a.on(Vec2f(4, 2)));
+    }
+
+    SECTION("create on")
+    {
+        Vec2f f = Vec2f(1, 1).closest_connection(Vec2f(2, 0));
+        Vec2f g = Vec2f(3, 1).closest_connection(Vec2f(2, 0));
+        Vec2f h = Vec2f(-1, 1).closest_connection(Vec2f(2, 0));
+        Vec2f res_f(0, -1);
+        Vec2f res_g(-1, -1);
+        Vec2f res_h(1, -1);
+        CHECK(f.equals(res_f));
+        CHECK(g.equals(res_g));
+        CHECK(h.equals(res_h));
     }
 
     SECTION("reflection")

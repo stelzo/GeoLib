@@ -229,6 +229,27 @@ namespace geo
             return Vec2f(*this, projected_point(v));
         }
 
+        // Calculates the closest vector on v.
+        // The resulting vector has the smallest distance to any point on v.
+        // [WARNING] This function is not tested.
+        //
+        // @param vector that describes the line
+        // @return vector to a point on v that is closest this vector
+        inline Vec2f closest_connection(const Vec2f &v) const
+        {
+            Vec2f proj = projected_point(v);
+            Vec2f x(proj.x(), v.x()), y(proj.y(), v.y());
+            double x_comp = proj.x() / v.x(), y_comp = proj.y() / v.y();
+            if ((y_comp < 0 && x_comp < 0) || (x.zero() && y_comp < 0) || (y.zero() && x_comp < 0)) {
+                return -*this;
+            } else if ((y_comp < 1 && x_comp < 1) || (x.zero() && y_comp < 1) || (y.zero() && x_comp < 1)) {
+                return Vec2f(*this, proj);
+            } else {
+                return Vec2f(*this, v);
+            }
+
+        }
+
         // Rotates a vector around a pivot (origin is default).
         // Positive radians mean clockwise,
         // negative radians mean anticlockwise rotation.
@@ -288,6 +309,23 @@ namespace geo
         inline Vec2f operator*(float s) const
         {
             return Vec2f(_x * s, _y * s);
+        }
+
+        // Checks if this vector is laying on another.
+        //
+        // @param the other vector
+        // @return  true if this vector lays on v
+        //          false if this vector lays not on v
+        inline bool on(Vec2f v) const
+        {
+            if (zero() && v.zero()) {
+                return true;
+            } else if (zero() || v.zero()) {
+                return false;
+            }
+            double x_comp = _x / v.x(), y_comp = _y / v.y();
+            Vec2f x(_x, v.x()), y(_y, v.y());
+            return (fabs(x_comp - y_comp) < 0.00001 || x.zero() || y.zero()) && (x_comp > 0 || x.zero()) && (y_comp > 0 || y.zero()) && length() < v.length();
         }
 
         // Calculates the angle between the calling vector and v.
@@ -378,6 +416,7 @@ namespace geo
         // @return string representation of the vector.
         std::string to_string() const;
     };
+
     // Vec3f represents a 3D vector in space which also can be a point.
     // It implements basic arithmetic and helper functions, to create and manipulate
     // points and vectors.
