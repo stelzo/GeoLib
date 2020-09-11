@@ -241,7 +241,7 @@ namespace geo
             Vec2f x(proj.x(), v.x()), y(proj.y(), v.y());
             double x_comp = proj.x() / v.x(), y_comp = proj.y() / v.y();
             if ((y_comp < 0 && x_comp < 0) || (x.zero() && y_comp < 0) || (y.zero() && x_comp < 0)) {
-                return -*this;
+                return -*this; // to [0, 0]
             } else if ((y_comp < 1 && x_comp < 1) || (x.zero() && y_comp < 1) || (y.zero() && x_comp < 1)) {
                 return Vec2f(*this, proj);
             } else {
