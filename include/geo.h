@@ -951,6 +951,163 @@ namespace geo
         Polygon2(const Polygon2 &v);
     };
 
+
+    // Multiple points can be connected to define an object.
+    // The main structure describing that object is called a shape.
+    // [WARNING] Tis class is not yet tested
+    //
+    // Landau notation for all functions is given.
+    // Vector intern reallocation is ignored.
+    // n is scaling linearly with the amount of points in the polygon
+    // m is scaling linearly with the total amount of points passed
+    //
+    // !!! A shape only knows points, so each Vec3f will be interpreted as a point. !!!
+    // Points will be called vertex or vertices.
+    //
+    // It is assumed that each sub std::vector represents a layer of the shape at the same height
+    //
+    // The class manages the points and gives access to general manipulations of the structure.
+    // For specific functions, derive from this class.
+    class Shape3
+    {
+    private:
+        std::vector<std::vector<Vec3f>> vertices;
+
+    public:
+        Shape3() = default;
+
+        // Builds a polygon from all sides of a thing by combining the sides.
+        // O(m) time.
+        //
+        // @param sides of a structure described in points
+        Shape3(const std::vector<std::vector<Vec3f>> &layers);
+
+        // Add a single vertex to the vertices programmatically.
+        // If no layer is given it is assumed to be added to the last layer
+        // O(1) time.
+        //
+        // @param vertex to add to the vertices.
+        inline void add_vertex(const Vec3f &vertex, int layer = -1)
+        {
+            layer = layer < 0 ? vertices.size() : layer;
+            vertices[layer].push_back(vertex);
+        }
+
+        // Checks whether a point is inside a shape.
+        // O(n) time.
+        //
+        // @param point to check
+        // @return true if inside, else false
+        // TODO interpolate between layers to find check as a polygon
+        // bool contains(const Vec3f &p);
+
+        // Smoothes the shape with catmull-rom splines.
+        // O(n*(1/distance)) time.
+        //
+        // @param alpha type of spline (0.0 = uniform, 0.5 = centripetal, 1.0 = chordal). Must be between 0.0 and 1.0
+        // @param tension how tight the spline should be, 1.0 would result in linear splines. Must be between 0.0 and 1.0.
+        // @param distance distance between new points in 1/100 of the distance between to original points
+        // TODO implement this on a layer by layer basis
+        // void smooth(float alpha, float tension, unsigned int distance);
+
+        // Adds a vertex to the shape on the last layer.
+        // O(n) time complexity, because it returns a copy of the shape.
+        //
+        // @param vertex to add
+        // @return new shape with added vertex
+        inline Shape3 operator+(const Vec3f &vertex) const
+        {
+            Shape3 ret = Shape3(vertices);
+            ret.add_vertex(vertex);
+
+            return ret;
+        }
+
+        // Adds a vertex to the shape on the last layer but inclusive and pretty.
+        // O(1) time.
+        //
+        // @param vertex to add
+        // @return new polygon with added vertex
+        inline Shape3 &operator<<(const Vec3f &vertex)
+        {
+            return (*this += vertex);
+        }
+
+        // Adds a vertex to the shape on the last layer but inclusive.
+        // O(1) time.
+        //
+        // @param vertex to add
+        // @return *this for concatenation
+        inline Shape3 &operator+=(const Vec3f &vertex)
+        {
+            add_vertex(vertex);
+            return *this;
+        }
+
+        // Moves all points of the shape.
+        // O(n) time.
+        //
+        // @param movement of the shape
+        void move(const Vec3f& movement);
+
+        // Rotates all points of the shape.
+        // Positive radians mean clockwise,
+        // negative radians mean anticlockwise rotation.
+        // Height of the points is kept unaffected
+        // O(n) time.
+        //
+        // @param radians to rotate
+        // @param pivot to rotate around
+        void rotate(float rad, const Vec3f& pivot = Vec3f());
+
+        // Sizes the shape along normals to allow for deadzones
+        // Positive values mean enlargement.
+        // Negative values mean shrinking.
+        // Height of the points is kept unaffected (for now)
+        // O(n) time.
+        //
+        // @param dist how far the shape should be scaled
+        // @return the sized shape
+        Shape3 scaled(float dist);
+
+        // Minimal string representation of a shape.
+        // O(n) time.
+        //
+        // @return string representation of the shape.
+        std::string to_string() const;
+
+        // Copying a shape
+        // O(n) time.
+        //
+        // @param clone the shape to clone
+        // @return this for concatenation
+        Shape3 &operator=(const Shape3& clone) {
+            vertices = clone.vertices;
+            return *this;
+        }
+
+        // Calculates the volume of this shape
+        // O(n) time.
+        //
+        // @return the volume covered by this shape
+        // TODO implement this function
+        // double volume();
+
+        // Get the underlying points
+        // O(1) time.
+        //
+        // @return the vertices of the shape
+        inline std::vector<std::vector<Vec3f>> getVertices() const {
+            return vertices;
+        }
+
+        // Copy constructor.
+        // O(m) time.
+        //
+        // @param shape to copy from.
+        Shape3(const Shape3 &v);
+    };
+
 } // namespace geo
 
 #endif // geo_h
