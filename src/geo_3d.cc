@@ -22,42 +22,36 @@
 
 using namespace geo;
 
-Vec2f::Vec2f(const Vec2f &from, const Vec2f &to) : _x(to._x - from._x), _y(to._y - from._y) {}
+Vec3f::Vec3f(const Vec3f &from, const Vec3f &to) : _x(to._x - from._x), _y(to._y - from._y), _z(to._z - from._z) {}
 
-std::string Vec2f::to_string() const
+std::string Vec3f::to_string() const
 {
     std::stringstream ss;
-    ss << "[Vec2] "
+    ss << "[Vec3] "
        << "x: " << _x << " -- "
-       << "y: " << _y;
+       << "y: " << _y << " -- "
+       << "z: " << _z;
 
     return ss.str();
 }
 
-Vec2f::~Vec2f() {}
+Vec3f::~Vec3f() {}
 
-Vec2f::operator std::string() const
+Vec3f::operator std::string() const
 {
     return to_string();
 }
 
-Vec2f::Vec2f(float x, float y) : _x(x), _y(y) {}
+Vec3f::Vec3f(float x, float y, float z) : _x(x), _y(y), _z(z) {}
 
-Vec2f::Vec2f() : _x(0), _y(0) {}
+Vec3f::Vec3f() : _x(0), _y(0), _z(0) {}
 
-Vec2f::Vec2f(const Vec2f &v) : _x(v._x), _y(v._y) {}
+Vec3f::Vec3f(const Vec3f &v) : _x(v._x), _y(v._y), _z(v._z) {}
 
-Polygon2::Polygon2(const std::vector<std::vector<Vec2f>> &sides)
-{
-    for (auto side : sides)
-    {
-        vertices.insert(vertices.end(), side.begin(), side.end());
-    }
-}
+Shape3::Shape3(const std::vector<std::vector<Vec3f>> &layers) : vertices(layers) {}
 
-Polygon2::Polygon2(const std::vector<Vec2f> &vertices) : vertices(vertices) {}
-
-bool Polygon2::contains(const Vec2f &p)
+/*
+bool Shape3::contains(const Vec3f &p)
 {
     size_t nvert = vertices.size();
     size_t i, j;
@@ -75,8 +69,10 @@ bool Polygon2::contains(const Vec2f &p)
 
     return c;
 }
+*/
 
-void Polygon2::smooth(float alpha, float tension, unsigned int distance)
+/*
+void Shape3::smooth(float alpha, float tension, unsigned int distance)
 {
     size_t size = vertices.size();
     std::vector<Vec2f> smoothed;
@@ -117,92 +113,65 @@ void Polygon2::smooth(float alpha, float tension, unsigned int distance)
 
     vertices = smoothed;
 }
+*/
 
-void Polygon2::move(const Vec2f& movement)
+void Shape3::move(const Vec3f& movement)
 {
-    for (auto& vertex : vertices) {
-        vertex += movement;
+    for (auto& layer : vertices) {
+        for (auto& vertex : layer) {
+            vertex += movement;
+        }
     }
 }
 
-void Polygon2::rotate(float rad, const Vec2f& pivot)
+void Shape3::rotate(float rad, const Vec3f& pivot)
 {
-    for (auto& vertex : vertices) {
-        vertex = vertex.rotate(rad, pivot);
+    for (auto& layer : vertices) {
+        for (auto &vertex : layer) {
+            vertex = vertex.rotate(rad, pivot);
+        }
     }
 }
 
-Polygon2::Polygon2(const Polygon2 &v) : vertices(v.vertices) {}
+Shape3::Shape3(const Shape3 &v) : vertices(v.vertices) {}
 
-Polygon2::Polygon2 (vectortype polygontype) {
-    type = polygontype;
-}
+Shape3 Shape3::scaled (float dist) {
+    std::vector<std::vector<Vec3f>> sized;
 
-Polygon2::Polygon2 (const std::vector<std::vector<Vec2f>> &sides, vectortype polygontype) {
-    for (auto side : sides)
-    {
-        vertices.insert(vertices.end(), side.begin(), side.end());
+    for (int j = 0; j < (int) vertices.size(); ++j) {
+        Vec3f con(vertices[j].back(), vertices[j][1]);
+        Vec3f rn(con.y(), -con.x(), con.z());
+        sized[j].push_back(rn.normalize() * dist + vertices[j][0]);
+
+        for (int i = 1; i < (int) vertices[j].size() - 1; ++i) {
+            Vec3f connection(vertices[j][i - 1], vertices[j][i + 1]);
+            Vec3f rnorm(connection.y(), -connection.x(), connection.z());
+            sized[j].push_back(rnorm.normalize() * dist + vertices[j][i]);
+        }
+
+
+        Vec3f c(vertices[j][vertices[j].size() - 2], vertices[j][0]);
+        Vec3f r(c.y(), -c.x(), c.z());
+        sized[j].push_back(r.normalize() * dist + vertices[j][vertices[j].size() - 1]);
     }
-    type = polygontype;
+    return Shape3(sized);
 }
 
-Polygon2::Polygon2 (const std::vector<Vec2f> &vertices, vectortype polygontype) : vertices(vertices) {
-    type = polygontype;
-}
-
-Polygon2 Polygon2::sized (float dist) {
-    std::vector<Vec2f> sized;
-
-    Vec2f con(vertices.back(), vertices[1]);
-    Vec2f rn(con.y(), -con.x());
-    sized.push_back(rn.normalize() * dist + vertices[0]);
-
-    for (int i = 1; i < (int) vertices.size() - 1; ++i) {
-        Vec2f connection(vertices[i - 1], vertices[i + 1]);
-        Vec2f rnorm(connection.y(), -connection.x());
-        sized.push_back(rnorm.normalize() * dist + vertices[i]);
-    }
-
-
-    Vec2f c(vertices[vertices.size() - 2], vertices[0]);
-    Vec2f r(c.y(), -c.x());
-    sized.push_back(r.normalize() * dist + vertices[vertices.size() - 1]);
-
-    return Polygon2(sized);
-}
-
-Polygon2 Polygon2::scaled (float dist) {
-    std::vector<Vec2f> sized;
-
-    Vec2f con(vertices.back(), vertices[1]);
-    Vec2f rn(con.y(), -con.x());
-    sized.push_back(rn.normalize() * dist + vertices[0]);
-
-    for (int i = 1; i < (int) vertices.size() - 1; ++i) {
-        Vec2f connection(vertices[i - 1], vertices[i + 1]);
-        Vec2f rnorm(connection.y(), -connection.x());
-        sized.push_back(rnorm.normalize() * dist + vertices[i]);
-    }
-
-
-    Vec2f c(vertices[vertices.size() - 2], vertices[0]);
-    Vec2f r(c.y(), -c.x());
-    sized.push_back(r.normalize() * dist + vertices[vertices.size() - 1]);
-
-    return Polygon2(sized);
-}
-
-std::string Polygon2::to_string () const {
+std::string Shape3::to_string () const {
     std::stringstream ss;
-    ss << "[Polygon2]\n";
-    for (auto vertex : vertices) {
-        ss << vertex.to_string() << "\n";
+    ss << "[Shape3]\n";
+    for (auto layer : vertices) {
+        ss << "[Shape3 new layer]\n";
+        for (auto vertex : layer) {
+            ss << vertex.to_string() << "\n";
+        }
     }
 
     return ss.str();
 }
 
-double Polygon2::area () {
+/*
+double Shape3::volume () {
     double phalf = 0, nhalf = 0;
 
     for (int i = 0; i < (int) vertices.size(); ++i) {
@@ -212,3 +181,4 @@ double Polygon2::area () {
 
     return std::abs(phalf - nhalf) / 2;
 }
+*/
