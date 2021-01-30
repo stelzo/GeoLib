@@ -20,7 +20,7 @@ README.md.
 
 In your directory of choice:
 ```sh
-git clone git@git.irt-e.de:driverless/geolib.git
+git clone git@gitlab.com:irt-driverless/geolib.git
 mkdir -p geolib/build && cd geolib/build
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++ ..
 make
@@ -44,7 +44,7 @@ target_link_libraries(<exe_target> PUBLIC /usr/local/lib/libgeo.a)
 ## How to extend
 
 If you have a geometry function that is needed for your package or node
-1. clone this repo `git clone https://git.irt-e.de/driverless/geolib`
+1. clone this repo `git clone https://gitlab.com/irt-driverless/geolib.git`
 2. make a feature-branch `git checkout -b feature/<your_feature>`
 3. add tests for your function (tests/tests.cpp)
 4. implement your function
