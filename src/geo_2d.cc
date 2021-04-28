@@ -76,6 +76,20 @@ bool Polygon2::contains(const Vec2f &p)
     return c;
 }
 
+bool Polygon2::contains(const Polygon2 &p)
+{
+
+    for (auto v : p.vertices)
+    {
+        if (!contains(v))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void Polygon2::smooth(float alpha, float tension, unsigned int distance)
 {
     size_t size = vertices.size();

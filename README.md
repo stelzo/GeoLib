@@ -20,7 +20,7 @@ README.md.
 
 In your directory of choice:
 ```sh
-git clone git@git.irt-e.de:driverless/geolib.git
+git clone git@gitlab.com:irt-driverless/geolib.git
 mkdir -p geolib/build && cd geolib/build
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++ ..
 make

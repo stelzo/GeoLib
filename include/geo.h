@@ -201,6 +201,24 @@ namespace geo
             return (_x * v._x) + (_y * v._y);
         }
 
+        // Length of the Cross product with another vector. Mind the order. a.crossl(b) == a x b.
+        // Deigned for triple_product() as c.cross(a.crossl(b)) == (a x b) x c
+        //
+        // @param vector
+        inline double crossl(const Vec2f &v) const
+        {
+            return (_x * v._y) - (_y * v._x);
+        }
+
+        // Cross product with the length of a perpendicular vector. Mind the order. a.cross(b) == b x a.
+        // Deigned for triple_product() as c.cross(a.crossl(b)) == (a x b) x c
+        //
+        // @param vector
+        inline Vec2f cross(const double &d) const
+        {
+            return Vec2f((-d * _y), (d * _x));
+        }
+
         // Checks whether a vector has values near zero (std::limits::epsilon).
         //
         // @return true if values are near zero, else false
@@ -415,6 +433,15 @@ namespace geo
         //
         // @return string representation of the vector.
         std::string to_string() const;
+
+        // Calculates the triple product of three vectors.
+        // (first x second) x third
+        //
+        // @param other a vector the return should point towards
+        // @return the vector perpendicular to this in direction of other
+        inline static Vec2f triple_prod(Vec2f first, Vec2f second, Vec2f third) {
+            return third.cross(first.crossl(second));
+        }
     };
 
     // Vec3f represents a 3D vector in space which also can be a point.
@@ -827,6 +854,13 @@ namespace geo
         // @return true if inside, else false
         bool contains(const Vec2f &p);
 
+        // Checks whether a polygon is completely inside a polygon.
+        // O(n * m) time.
+        //
+        // @param polygon to check
+        // @return true if inside, else false
+        bool contains(const Polygon2 &p);
+
         // Smoothes the polygon with catmull-rom splines.
         // [WARNING] This function is not tested (because it is hard to do).
         // O(n*(1/distance)) time.
@@ -936,7 +970,7 @@ namespace geo
         // @return the area covered by this polygon
         double area();
 
-        // Get the underlaying points
+        // Get the underlying points
         // O(1) time.
         //
         // @return the vertices of the polygon
@@ -949,6 +983,81 @@ namespace geo
         //
         // @param polygon to copy from.
         Polygon2(const Polygon2 &v);
+
+        // Find the center of the polygon
+        // O(n) time.
+        //
+        // @return the center of the polygon
+        inline Vec2f center() {
+            Vec2f sum;
+            for (auto p : vertices) {
+                sum += p;
+            }
+            return sum / vertices.size();
+        }
+
+        // Find the farthest away vector from the center in the direction of the vector
+        // O(n) time.
+        //
+        // @param dir the direction to search for the farthest point
+        // @param center the center of the polygon, if already calculated
+        // @return the point farthest away from the center in the given direction
+        inline Vec2f farthest_in_dir(Vec2f dir, Vec2f center = center()) {
+            Vec2f farthest;
+            float dist = 0, current_dist;
+            for (auto p : vertices) {
+                current_dist = (center - p).projected_point(dir).length;
+                if (current_dist > dist) {
+                    farthest = p;
+                    dist = current_dist;
+                }
+            }
+            return farthest;
+        }
+
+        // Check if a polygon intersects with this polygon
+        // O(n*m?) time.
+        //
+        // @param p the other polygon to check for intersection
+        // @return true the polygons intersect, false if the polygons are separated
+        inline bool intersects(Polygon2 p) {
+            Vec2f center = center(), pcenter = p.center();
+            Vec2f con(center, pcenter);
+
+            // Begin building a triangle
+            Vec2f triangle[3] = {farthest_in_dir(con, center), p.farthest_in_dir(-con, pcenter), Vec2f()};
+            con = Vec2f::triple_prod(triangle[1] - triangle[0], -triangle[0], triangle[1] - triangle[0]);
+
+            while () {
+                triangle[2] = farthest_in_dir(con, center) - p.farthest_in_dir(-con, pcenter);
+
+                if (triangle[2].dot(con) < 0) {
+                    return false;
+                }
+
+                // vectors perpendicular to triangle[2]->triangle[x];
+                Vec2f two_one, two_zero;
+
+                two_one = Vec2f::triple_prod(triangle[0] - triangle[2], triangle[1] - triangle[2], triangle[1] - triangle[2]);
+                two_zero = Vec2f::triple_prod(triangle[1] - triangle[2], triangle[0] - triangle[2], triangle[0] - triangle[2]);
+
+                if (two_one.dot(-triangle[2]) > 0) {
+
+                    triangle[0] = triangle[2];
+                    con = two_one;
+
+                } else if (two_zero.dot(-triangle[2] > 0)) {
+
+                    triangle[1] = triangle[2];
+                    con = two_zero;
+
+                } else {
+                    // The origin is inside the triangle, the polygons intersect
+                    return true;
+                }
+
+            }
+        }
     };
 
 
