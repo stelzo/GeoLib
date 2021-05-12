@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
-project(geolib VERSION 0.0.1)
+project(geolib VERSION 0.1)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(ENABLE_TESTING "ENABLE_TESTING" OFF)
@@ -17,8 +17,7 @@ endif()
 
 
 set(LIBRARY_SRC
-    src/geo_base.cc
-    src/geo_2d.cc
+        src/geo_2d.cc
     src/geo_3d.cc
 )
 
