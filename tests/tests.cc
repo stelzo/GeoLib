@@ -1,4 +1,5 @@
 #define CATCH_CONFIG_MAIN
+
 #include "catch.hpp"
 #include "geo.h"
 
@@ -65,7 +66,7 @@ TEST_CASE("construct", "[vec2]")
     CHECK(g.to_string() == str_res);
 
     std::stringstream ss;
-    ss << (std::string)g;
+    ss << (std::string) g;
     CHECK(ss.str() == str_res);
 }
 
@@ -86,7 +87,7 @@ TEST_CASE("basic arithm", "[vec2]")
     SECTION("plus")
     {
         Vec2f res(6, 7);
-        auto c = a + b;
+        auto  c = a + b;
         CHECK(c.equals(res));
     }
 
@@ -158,14 +159,14 @@ TEST_CASE("functions", "[vec2]")
 
     SECTION("rotate clockwise around point")
     {
-        auto c = a.rotate(M_PI / 2, b);
+        auto  c = a.rotate(M_PI / 2, b);
         Vec2f res(2, 6);
         CHECK(c.equals(res));
     }
 
     SECTION("rotate counter-clockwise around origin")
     {
-        auto c = a.rotate(-M_PI / 2);
+        auto  c = a.rotate(-M_PI / 2);
         Vec2f res(-2, 2);
         CHECK(c.equals(res));
     }
@@ -216,6 +217,71 @@ TEST_CASE("functions", "[vec2]")
         Vec2f res_f(0, -1);
         Vec2f res_g(-1, -1);
         Vec2f res_h(1, -1);
+        CHECK(f.equals(res_f));
+        CHECK(g.equals(res_g));
+        CHECK(h.equals(res_h));
+    }
+
+    SECTION("closest to")
+    {
+        Vec2f f = Vec2f(1, 1).closest_to({Vec2f(), Vec2f(2, 0)});
+        Vec2f g = Vec2f(3, 1).closest_to({Vec2f(), Vec2f(2, 0)});
+        Vec2f h = Vec2f(-1, 1).closest_to({Vec2f(), Vec2f(2, 0)});
+        Vec2f res_f(0, -1);
+        Vec2f res_g(-1, -1);
+        Vec2f res_h(1, -1);
+        CHECK(f.equals(res_f));
+        CHECK(g.equals(res_g));
+        CHECK(h.equals(res_h));
+    }
+
+    SECTION("closest on")
+    {
+        Vec2f f = Vec2f(1, 1).closest_on({Vec2f(), Vec2f(2, 0)});
+        Vec2f g = Vec2f(3, 1).closest_on({Vec2f(), Vec2f(2, 0)});
+        Vec2f h = Vec2f(-1, 1).closest_on({Vec2f(), Vec2f(2, 0)});
+        Vec2f res_f(1, 0);
+        Vec2f res_g(2, 0);
+        Vec2f res_h(0, 0);
+        CHECK(f.equals(res_f));
+        CHECK(g.equals(res_g));
+        CHECK(h.equals(res_h));
+    }
+
+    SECTION("intersection")
+    {
+        Vec2f f = Vec2f(1, 1).intersection(Vec2f(2, 0), Vec2f(0, 1));
+        Vec2f g = Vec2f(1, 1).intersection(Vec2f(2, 0), Vec2f(0, -1));
+        Vec2f h = Vec2f(-1, 1).intersection(Vec2f(2, 0), Vec2f(0, 1));
+        Vec2f res_f(2, 2);
+        Vec2f res_g(2, 2);
+        Vec2f res_h(2, -2);
+        CHECK(f.equals(res_f));
+        CHECK(g.equals(res_g));
+        CHECK(h.equals(res_h));
+    }
+
+    SECTION("intersection on")
+    {
+        Vec2f f = Vec2f(1, 1).intersection_on(Vec2f(2, 0), Vec2f(0, 1));
+        Vec2f g = Vec2f(1, 1).intersection_on(Vec2f(2, 0), Vec2f(0, 3));
+        Vec2f h = Vec2f(-1, 1).intersection_on(Vec2f(2, 0), Vec2f(0, 2));
+        Vec2f res_f(0, 0);
+        Vec2f res_g(2, 2);
+        Vec2f res_h(0, 0);
+        CHECK(f.equals(res_f));
+        CHECK(g.equals(res_g));
+        CHECK(h.equals(res_h));
+    }
+
+    SECTION("intersection on spline")
+    {
+        Vec2f f = Vec2f(1, 1).intersection_on({Vec2f(2, 0), Vec2f(2, 1)});
+        Vec2f g = Vec2f(1, 1).intersection_on({Vec2f(2, 0), Vec2f(2, 3)});
+        Vec2f h = Vec2f(-1, 1).intersection_on({Vec2f(2, 0), Vec2f(2, 2)});
+        Vec2f res_f(0, 0);
+        Vec2f res_g(2, 2);
+        Vec2f res_h(0, 0);
         CHECK(f.equals(res_f));
         CHECK(g.equals(res_g));
         CHECK(h.equals(res_h));
@@ -287,7 +353,7 @@ TEST_CASE("construct3", "[vec3]")
     CHECK(g.to_string() == str_res);
 
     std::stringstream ss;
-    ss << (std::string)g;
+    ss << (std::string) g;
     CHECK(ss.str() == str_res);
 }
 
@@ -308,7 +374,7 @@ TEST_CASE("basic arithm3", "[vec3]")
     SECTION("plus")
     {
         Vec3f res(6, 7, 8);
-        auto c = a + b;
+        auto  c = a + b;
         CHECK(c.equals(res));
     }
 
@@ -380,14 +446,14 @@ TEST_CASE("functions3", "[vec3]")
 
     SECTION("rotate clockwise around point")
     {
-        auto c = a.rotate(M_PI / 2, b);
+        auto  c = a.rotate(M_PI / 2, b);
         Vec3f res(2, 6, 2);
         CHECK(c.equals(res));
     }
 
     SECTION("rotate counter-clockwise around origin")
     {
-        auto c = a.rotate(-M_PI / 2);
+        auto  c = a.rotate(-M_PI / 2);
         Vec3f res(-2, 2, 2);
         CHECK(c.equals(res));
     }
