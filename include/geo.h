@@ -23,6 +23,7 @@
 #define geo_h
 
 #include <string>
+#include <utility>
 #include <vector>
 #include <math.h>
 #include <limits>
@@ -279,7 +280,7 @@ public:
     // @return the closest point on the Spline
     inline Vec2f closest_on (std::vector<Vec2f> points) {
 
-        return *this + closest_to(points);
+        return *this + closest_to(std::move(points));
     }
 
     // Creates a Spline from a given set of points
@@ -300,7 +301,7 @@ public:
     // @param origin the Point where dir originates
     // @param dir the normalized vector in the desired direction
     // @return the point where the vectors intersect, [0, 0] if parallel
-    inline Vec2f intersection (Vec2f origin, Vec2f dir) {
+    inline Vec2f intersection (const Vec2f& origin, const Vec2f& dir) const {
 
         if (this->normalize().dot(dir) == 1) {
             // Parallel
@@ -312,7 +313,7 @@ public:
 
 
         // use dot product only for determining opposing vectors
-        float scale = con.dot(proj) * con.length() / proj.length();
+        double scale = con.dot(proj) * con.length() / proj.length();
         //printf("Scale: %f, Direction: %s, Dot: %f\n", scale, (dir * scale).to_string().c_str(), con.dot(proj));
         return origin + (dir * scale);
     }
@@ -322,7 +323,7 @@ public:
     // @param origin the Point where dir originates
     // @param dir the vector in the desired direction
     // @return the point where the vectors intersect, or [0, 0] if not intersecting
-    inline Vec2f intersection_on (Vec2f origin, Vec2f dir) {
+    inline Vec2f intersection_on (const Vec2f& origin, const Vec2f& dir) const {
 
         // get the intersection point
         Vec2f intersection = this->intersection(origin, dir.normalize());
@@ -336,12 +337,12 @@ public:
 
 
     // Finds the intersection on a Spline between Points.
-    // Traces a ray onto a Spline between Points.
+    // Casts a ray onto a Spline between Points.
     // [WARNING] The given vector must be made of Points, not a Spline.
     //
     // @param points the Points on which Spline the intersection should be found
     // @return the intersection with the Spline, or [0, 0] if not intersecting
-    inline Vec2f intersection_on (std::vector<Vec2f> points) {
+    inline Vec2f intersection_on (std::vector<Vec2f> points) const {
 
         // create Spline and set up defaults
         std::vector<Vec2f> spline        = to_spline(points);
@@ -447,7 +448,7 @@ public:
     // @param the other vector
     // @return  true if this vector lays in v
     //          false if this vector lays not in v
-    inline bool in (Vec2f v) const {
+    inline bool in (const Vec2f& v) const {
         if (zero() && v.zero()) {
             return true;
         }
